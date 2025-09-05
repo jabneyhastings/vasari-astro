@@ -1,0 +1,15 @@
+{
+  "title": "Home Page",
+  "carousel": [
+    {
+      "image": "/images/placeholder1.jpg",
+      "title": "First Slide",
+      "description": "Sample description"
+    },
+    {
+      "image": "/images/placeholder2.jpg", 
+      "title": "Second Slide",
+      "description": "Another sample"
+    }
+  ]
+}

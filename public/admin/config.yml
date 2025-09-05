@@ -1,10 +1,6 @@
-# backend:
-#   name: github
-#   repo: jabneyhastings/vasari-astro # Replace with your repo
-#   branch: main
-
 backend:
-  name: git-gateway
+  name: github
+  repo: jabneyhastings/vasari-astro # Replace with your repo
   branch: main
 
 media_folder: "public/uploads"

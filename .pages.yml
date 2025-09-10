@@ -1,12 +1,16 @@
-files:
-  - label: "Home Page"
-    name: "home"
+media:
+  input: uploads
+  output: /uploads
+
+content:
+  - name: "home"
+    label: "Home Page"
+    type: file
     path: "src/content/pages/home.json"
-    format: json
     fields:
       - name: title
         label: Title
-        type: text
+        type: string
 
       - name: heroCarousel
         label: Hero Carousel
@@ -14,11 +18,10 @@ files:
         fields:
           - name: image
             label: Image
-            type: file
-            allow_multiple: false
+            type: image
           - name: title
             label: Title
-            type: text
+            type: string
             required: false
           - name: description
             label: Description
@@ -26,11 +29,11 @@ files:
             required: false
           - name: link
             label: Link
-            type: text
+            type: string
             required: false
           - name: gradient
             label: Gradient
-            type: text
+            type: string
             required: false
 
       - name: aboutSection
@@ -39,7 +42,7 @@ files:
         fields:
           - name: title
             label: Title
-            type: text
+            type: string
           - name: content
             label: Content
             type: list
@@ -58,8 +61,7 @@ files:
             fields:
               - name: image
                 label: Image
-                type: file
-                allow_multiple: false
+                type: image
               - name: text
                 label: Text
                 type: text
@@ -71,4 +73,4 @@ files:
         fields:
           - name: content
             label: Content
-            type: textarea
+            type: text

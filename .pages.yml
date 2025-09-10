@@ -15,7 +15,7 @@ content:
       - name: heroCarousel
         label: Hero Carousel
         type: list
-        fields:
+        fields:     # plural because each item is an object
           - name: image
             label: Image
             type: image
@@ -58,7 +58,7 @@ content:
           - name: slides
             label: Slides
             type: list
-            fields:
+            fields:   # plural here too, since each slide is an object
               - name: image
                 label: Image
                 type: image

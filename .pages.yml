@@ -1,5 +1,5 @@
 media:
-  input: uploads
+  input: public/uploads
   output: /uploads
 
 content:

@@ -14,8 +14,9 @@ content:
 
       - name: heroCarousel
         label: Hero Carousel
-        type: list
-        fields:     # plural because each item is an object
+        type: object     # Use object for structured fields
+        list: true       # This makes the field an array
+        fields:          # Inner fields define the structure of each item
           - name: image
             label: Image
             type: image
@@ -57,8 +58,9 @@ content:
         fields:
           - name: slides
             label: Slides
-            type: list
-            fields:   # plural here too, since each slide is an object
+            type: object
+            list: true
+            fields:
               - name: image
                 label: Image
                 type: image

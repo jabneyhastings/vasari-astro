@@ -13,7 +13,7 @@ const pagesCollection = defineCollection({
     })).optional(),
     aboutSection: z.object({
       title: z.string(),
-      content: z.array(z.string()),
+      content: z.string(),  // <-- single string instead of array
     }).optional(),
     secondaryCarousel: z.object({
       slides: z.array(z.object({

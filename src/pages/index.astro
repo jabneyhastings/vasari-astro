@@ -21,13 +21,9 @@ const { heroCarousel, aboutSection, secondaryCarousel, textBlock } = homeData.da
     {aboutSection && (
         <section id="about" class="about-section">
             <div class="about-header">
-            <h2>{aboutSection.title}</h2>
+                <h2>{aboutSection.title}</h2>
             </div>
-            <div class="about-content">
-            {aboutSection.content.map((paragraph) => (
-                <p>{paragraph}</p>
-            ))}
-            </div>
+            <div class="about-content" set:html={aboutSection.content} />
         </section>
     )}
 

@@ -1,15 +1,49 @@
 {
-  "title": "Home Page",
-  "carousel": [
+  "title": "Welcome to Vasari",
+  "heroCarousel": [
     {
-      "image": "/images/placeholder1.jpg",
-      "title": "First Slide",
-      "description": "Sample description"
+      "image": "/uploads/hero1.jpg"
     },
     {
-      "image": "/images/placeholder2.jpg", 
-      "title": "Second Slide",
-      "description": "Another sample"
+      "image": "/uploads/hero2.jpg"
+    },
+    {
+      "image": "/uploads/hero3.jpg"
+    },
+    {
+      "image": "/uploads/hero4.jpg"
+    },
+    {
+      "image": "/uploads/hero5.jpg"
     }
-  ]
+  ],
+  "aboutSection": {
+    "title": "About",
+    "content": [
+      "At Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging. Every project is shaped with care: guided by craft, grounded in integrity, and designed with a deep understanding of how people want to live --- creating spaces that feel effortless, honest and built to last."
+    ]
+  },
+  "secondaryCarousel": {
+    "slides": [
+      {
+        "image": "/uploads/hero1.jpg",
+        "text": "Slide 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+      },
+      {
+        "image": "/uploads/hero2.jpg"
+      },
+      {
+        "image": "/uploads/hero3.jpg"
+      },
+      {
+        "image": "/uploads/hero4.jpg"
+      },
+      {
+        "image": "/uploads/hero5.jpg"
+      }
+    ]
+  },
+  "textBlock": {
+    "content": "We bring architecture, construction, interiors, and delivery together under one roof, guiding each stage with care and clarity. From earliest ideas to the final finish, our approach is seamless, deliberate, and highly personal --- so nothing is rushed, and nothing is left to chance. The result is a home that feels complete in each sense."
+  }
 }

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Carousel from '../components/Carousel.astro';
+import HeroCarousel from '../components/HeroCarousel.astro';
+import SecondaryCarousel from '../components/SecondaryCarousel.astro';
 import { getEntry } from 'astro:content';
 
 const homeData = await getEntry('pages', 'home');
@@ -8,10 +9,41 @@ const homeData = await getEntry('pages', 'home');
 if (!homeData) {
   throw new Error('Home page data not found');
 }
+
+const { heroCarousel, aboutSection, secondaryCarousel, textBlock } = homeData.data;
 ---
-<Layout title="Welcome">
-  <main>
-    <h1>{homeData.data.title}</h1>
-    {homeData.data.carousel && <Carousel slides={homeData.data.carousel} />}
-  </main>
+
+<Layout title={homeData.data.title}>
+    <!-- Hero Carousel -->
+    {heroCarousel && <HeroCarousel slides={heroCarousel} />}
+
+  <!-- About Section -->
+    {aboutSection && (
+        <section id="about" class="about-section">
+            <div class="about-header">
+            <h2>{aboutSection.title}</h2>
+            </div>
+            <div class="about-content">
+            {aboutSection.content.map((paragraph) => (
+                <p>{paragraph}</p>
+            ))}
+            </div>
+        </section>
+    )}
+
+    <!-- Secondary Carousel -->
+    <section id="services">
+        {secondaryCarousel && (
+            <SecondaryCarousel
+                slides={secondaryCarousel.slides}
+            />
+        )}
+    </section>
+
+  <!-- Text Block -->
+    {textBlock && (
+        <section class="text-block">
+            <p>{textBlock.content}</p>
+        </section>
+    )}
 </Layout>

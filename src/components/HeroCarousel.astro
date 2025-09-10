@@ -1,0 +1,217 @@
+---
+interface Slide {
+  image?: string;
+  title?: string;
+  description?: string;
+  link?: string;
+  gradient?: string; // For custom gradients
+}
+
+interface Props {
+  slides: Slide[];
+}
+
+const { slides } = Astro.props;
+
+// Default gradients if no custom ones provided
+const defaultGradients = [
+  'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
+  'linear-gradient(45deg, #f093fb 0%, #f5576c 100%)',
+  'linear-gradient(45deg, #4facfe 0%, #00f2fe 100%)'
+];
+---
+
+<section class="hero-carousel">
+  {slides.map((slide, index) => (
+    <div 
+      class={`hero-slide ${index === 0 ? 'active' : ''}`}
+      style={slide.image 
+        ? `background-image: url(${slide.image})` 
+        : `background-image: ${slide.gradient || defaultGradients[index % defaultGradients.length]}`
+      }
+    >
+      {(slide.title || slide.description) && (
+        <div class="hero-content">
+          {slide.title && <h1>{slide.title}</h1>}
+          {slide.description && <p>{slide.description}</p>}
+          {slide.link && (
+            <a href={slide.link} class="hero-cta">Learn More</a>
+          )}
+        </div>
+      )}
+    </div>
+  ))}
+  
+  <div class="hero-dots">
+    {slides.map((_, index) => (
+      <div 
+        class={`hero-dot ${index === 0 ? 'active' : ''}`} 
+        data-slide={index}
+      ></div>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    let currentHeroSlide = 0;
+    const heroSlides = document.querySelectorAll('.hero-slide');
+    const heroDots = document.querySelectorAll('.hero-dot');
+    
+    function showHeroSlide(index) {
+      heroSlides.forEach(slide => slide.classList.remove('active'));
+      heroDots.forEach(dot => dot.classList.remove('active'));
+      
+      heroSlides[index].classList.add('active');
+      heroDots[index].classList.add('active');
+    }
+    
+    function nextHeroSlide() {
+      currentHeroSlide = (currentHeroSlide + 1) % heroSlides.length;
+      showHeroSlide(currentHeroSlide);
+    }
+    
+    // Auto-advance hero carousel
+    const autoAdvance = setInterval(nextHeroSlide, 5000);
+    
+    // Hero dot click handlers
+    heroDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentHeroSlide = index;
+        showHeroSlide(currentHeroSlide);
+        
+        // Reset auto-advance timer when user manually navigates
+        clearInterval(autoAdvance);
+        setTimeout(() => {
+          setInterval(nextHeroSlide, 5000);
+        }, 5000);
+      });
+    });
+  });
+</script>
+
+<style>
+    .hero-carousel {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .hero-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .hero-slide.active {
+        opacity: 1;
+    }
+
+    .hero-content {
+        padding: 0 5rem;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        max-width: 600px;
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .hero-content p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+        opacity: 0.95;
+    }
+
+    .hero-cta {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        border: 2px solid rgba(255,255,255,0.3);
+        font-weight: 600;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .hero-cta:hover {
+        background: rgba(255,255,255,0.3);
+        border-color: rgba(255,255,255,0.5);
+        transform: translateY(-2px);
+    }
+
+    .hero-dots {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 2rem;
+        z-index: 10;
+    }
+
+    .hero-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: background 0.3s ease;
+      position: relative;
+    }
+
+    .hero-dot.active {
+      background: white;
+    }
+
+    .hero-dot::after {
+      content: "";
+      position: absolute;
+      inset: -12px;
+      border: 1px solid white;
+      border-radius: 50%;
+      transform: scale(0.8);
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    .hero-dot.active::after {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .hero-dot:hover {
+        background: rgba(255,255,255,0.8);
+    }
+
+  /* Responsive design */
+    @media (max-width: 768px) {
+        .hero-content {
+            padding: 0 2rem;
+        }
+        
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+        
+        .hero-content p {
+            font-size: 1.1rem;
+        }
+    }
+</style>

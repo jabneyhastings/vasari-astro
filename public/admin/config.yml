@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: jabneyhastings/vasari-astro # Replace with your repo
+  name: git-gateway
   branch: main
 
 media_folder: "public/uploads"
@@ -15,11 +14,41 @@ collections:
         file: "src/content/pages/home.json"
         fields:
           - { name: "title", label: "Page Title", widget: "string" }
-          - name: "carousel"
-            label: "Image Carousel"
+          
+          - name: "heroCarousel"
+            label: "Hero Carousel"
             widget: "list"
             fields:
-              - { name: "image", label: "Image", widget: "image" }
-              - { name: "title", label: "Title", widget: "string", required: false }
-              - { name: "description", label: "Description", widget: "text", required: false }
-              - { name: "link", label: "Link", widget: "string", required: false }
+              - { name: "title", label: "Slide Title", widget: "string", required: false }
+              - { name: "description", label: "Slide Description", widget: "text", required: false }
+              - { name: "link", label: "Call-to-Action Link", widget: "string", required: false }
+              - { name: "image", label: "Background Image", widget: "image", required: false, hint: "Leave empty to use gradient background" }
+              - { name: "gradient", label: "CSS Gradient", widget: "string", required: false, hint: "e.g. linear-gradient(45deg, #667eea 0%, #764ba2 100%)" }
+          
+          - name: "aboutSection"
+            label: "About Section"
+            widget: "object"
+            fields:
+              - { name: "title", label: "Section Title", widget: "string" }
+              - name: "content"
+                label: "Content Paragraphs"
+                widget: "list"
+                field: { name: "paragraph", label: "Paragraph", widget: "text" }
+          
+          - name: "secondaryCarousel"
+            label: "Secondary Carousel"
+            widget: "object"
+            fields:
+              - { name: "title", label: "Section Title", widget: "string" }
+              - name: "slides"
+                label: "Carousel Slides"
+                widget: "list"
+                fields:
+                  - { name: "image", label: "Image", widget: "image" }
+                  - { name: "text", label: "Slide Text", widget: "text", required: false }
+          
+          - name: "textBlock"
+            label: "Text Block"
+            widget: "object"
+            fields:
+              - { name: "content", label: "Content", widget: "text" }

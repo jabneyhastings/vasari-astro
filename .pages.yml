@@ -1,53 +1,125 @@
-backend:
-  name: git-gateway
-  branch: main
-
-media_folder: "public/uploads"
-public_folder: "/uploads"
-
 collections:
-  - name: "pages"
-    label: "Pages"
+  pages:
+    label: Pages
+    folder: src/content/pages
+    format: json
     files:
-      - name: "home"
-        label: "Home Page"
-        file: "src/content/pages/home.json"
+      home:
+        label: Home
+        file: home.json
         fields:
-          - { name: "title", label: "Page Title", widget: "string" }
-          
-          - name: "heroCarousel"
-            label: "Hero Carousel"
-            widget: "list"
+          - name: title
+            label: Title
+            type: text
+          - name: heroCarousel
+            label: Hero Carousel
+            type: list
             fields:
-              - { name: "title", label: "Slide Title", widget: "string", required: false }
-              - { name: "description", label: "Slide Description", widget: "text", required: false }
-              - { name: "link", label: "Call-to-Action Link", widget: "string", required: false }
-              - { name: "image", label: "Background Image", widget: "image", required: false, hint: "Leave empty to use gradient background" }
-              - { name: "gradient", label: "CSS Gradient", widget: "string", required: false, hint: "e.g. linear-gradient(45deg, #667eea 0%, #764ba2 100%)" }
-          
-          - name: "aboutSection"
-            label: "About Section"
-            widget: "object"
+              - name: image
+                label: Image
+                type: image
+              - name: title
+                label: Slide Title
+                type: text
+                required: false
+              - name: description
+                label: Slide Description
+                type: textarea
+                required: false
+              - name: link
+                label: Link
+                type: text
+                required: false
+              - name: gradient
+                label: Gradient
+                type: text
+                required: false
+          - name: aboutSection
+            label: About Section
+            type: object
             fields:
-              - { name: "title", label: "Section Title", widget: "string" }
-              - name: "content"
-                label: "Content Paragraphs"
-                widget: "list"
-                field: { name: "paragraph", label: "Paragraph", widget: "text" }
-          
-          - name: "secondaryCarousel"
-            label: "Secondary Carousel"
-            widget: "object"
-            fields:
-              - name: "slides"
-                label: "Carousel Slides"
-                widget: "list"
+              - name: title
+                label: Section Title
+                type: text
+              - name: content
+                label: Paragraphs
+                type: list
                 fields:
-                  - { name: "image", label: "Image", widget: "image" }
-                  - { name: "text", label: "Slide Text", widget: "text", required: false }
-          
-          - name: "textBlock"
-            label: "Text Block"
-            widget: "object"
+                  - name: paragraph
+                    label: Paragraph
+                    type: textarea
+          - name: secondaryCarousel
+            label: Secondary Carousel
+            type: object
             fields:
-              - { name: "content", label: "Content", widget: "textarea" }
+              - name: slides
+                label: Slides
+                type: list
+                fields:
+                  - name: image
+                    label# filepath: /Users/jamesabney-hastings/Documents/Zodono/Clients/Vasari/vasari-astro/.pages.yml
+collections:
+  pages:
+    label: Pages
+    folder: src/content/pages
+    format: json
+    files:
+      home:
+        label: Home
+        file: home.json
+        fields:
+          - name: title
+            label: Title
+            type: text
+          - name: heroCarousel
+            label: Hero Carousel
+            type: list
+            fields:
+              - name: image
+                label: Image
+                type: image
+              - name: title
+                label: Slide Title
+                type: text
+                required: false
+              - name: description
+                label: Slide Description
+                type: textarea
+                required: false
+              - name: link
+                label: Link
+                type: text
+                required: false
+              - name: gradient
+                label: Gradient
+                type: text
+                required: false
+          - name: aboutSection
+            label: About Section
+            type: object
+            fields:
+              - name: title
+                label: Section Title
+                type: text
+              - name: content
+                label: Paragraphs
+                type: list
+                fields:
+                  - name: paragraph
+                    label: Paragraph
+                    type: textarea
+          - name: secondaryCarousel
+            label: Secondary Carousel
+            type: object
+            fields:
+              - name: slides
+                label: Slides
+                type: list
+                fields:
+                  - name: image
+                    label: Image
+                    type: image
+                  - name: text
+                    label: Slide Text
+                    type: textarea
+                    required: false

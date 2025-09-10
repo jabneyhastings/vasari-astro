@@ -1,217 +1,297 @@
 ---
+import CmsImage from '../components/CmsImage.astro';
+
 interface Slide {
-  image?: string;
-  title?: string;
-  description?: string;
-  link?: string;
-  gradient?: string; // For custom gradients
+  image: string;
+  alt: string;
 }
 
 interface Props {
   slides: Slide[];
+  autoAdvanceDelay?: number;
 }
 
-const { slides } = Astro.props;
-
-// Default gradients if no custom ones provided
-const defaultGradients = [
-  'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
-  'linear-gradient(45deg, #f093fb 0%, #f5576c 100%)',
-  'linear-gradient(45deg, #4facfe 0%, #00f2fe 100%)'
-];
+const { slides, autoAdvanceDelay = 5000 } = Astro.props;
 ---
 
-<section class="hero-carousel">
-  {slides.map((slide, index) => (
-    <div 
-      class={`hero-slide ${index === 0 ? 'active' : ''}`}
-      style={slide.image 
-        ? `background-image: url(${slide.image})` 
-        : `background-image: ${slide.gradient || defaultGradients[index % defaultGradients.length]}`
-      }
-    >
-      {(slide.title || slide.description) && (
-        <div class="hero-content">
-          {slide.title && <h1>{slide.title}</h1>}
-          {slide.description && <p>{slide.description}</p>}
-          {slide.link && (
-            <a href={slide.link} class="hero-cta">Learn More</a>
-          )}
-        </div>
-      )}
-    </div>
-  ))}
-  
-  <div class="hero-dots">
-    {slides.map((_, index) => (
+<section class="carousel" aria-label="Hero carousel">
+  <div class="carousel__slides">
+    {slides.map((slide, index) => (
       <div 
-        class={`hero-dot ${index === 0 ? 'active' : ''}`} 
-        data-slide={index}
-      ></div>
+        class={`carousel__slide ${index === 0 ? 'carousel__slide--active' : ''}`}
+        aria-hidden={index !== 0}
+      >
+        <div class="carousel__image-container">
+          <CmsImage 
+            src={slide.image}
+            alt={slide.alt}
+            width={2400}
+            height={1350}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            class="carousel__image"
+            sizes="100vw"
+          />
+        </div>
+      </div>
     ))}
   </div>
+  
+  {slides.length > 1 && (
+    <div class="carousel__controls">
+      <div class="carousel__dots" role="tablist" aria-label="Carousel navigation">
+        {slides.map((slide, index) => (
+          <button 
+            class={`carousel__dot ${index === 0 ? 'carousel__dot--active' : ''}`}
+            role="tab"
+            aria-selected={index === 0}
+            aria-label={`Go to slide ${index + 1}: ${slide.alt}`}
+            data-slide={index}
+          />
+        ))}
+      </div>
+    </div>
+  )}
 </section>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    let currentHeroSlide = 0;
-    const heroSlides = document.querySelectorAll('.hero-slide');
-    const heroDots = document.querySelectorAll('.hero-dot');
-    
-    function showHeroSlide(index) {
-      heroSlides.forEach(slide => slide.classList.remove('active'));
-      heroDots.forEach(dot => dot.classList.remove('active'));
+<script define:vars={{ autoAdvanceDelay }}>
+  class HeroCarousel {
+    constructor() {
+      this.currentSlide = 0;
+      this.container = document.querySelector('.carousel__slides');
+      this.slides = this.container.querySelectorAll('.carousel__slide');
+      this.dots = document.querySelectorAll('.carousel__dot');
+      this.autoAdvanceInterval = null;
       
-      heroSlides[index].classList.add('active');
-      heroDots[index].classList.add('active');
+      if (this.slides.length <= 1) return;
+      
+      this.init();
     }
     
-    function nextHeroSlide() {
-      currentHeroSlide = (currentHeroSlide + 1) % heroSlides.length;
-      showHeroSlide(currentHeroSlide);
+    init() {
+      this.bindEvents();
+      this.startAutoAdvance();
+      
+      // Only pause on focus for accessibility (removed hover pause)
+      const carousel = document.querySelector('.carousel');
+      carousel?.addEventListener('focusin', () => this.pauseAutoAdvance());
+      carousel?.addEventListener('focusout', () => this.resumeAutoAdvance());
     }
     
-    // Auto-advance hero carousel
-    const autoAdvance = setInterval(nextHeroSlide, 5000);
-    
-    // Hero dot click handlers
-    heroDots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        currentHeroSlide = index;
-        showHeroSlide(currentHeroSlide);
+    bindEvents() {
+      this.dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => this.goToSlide(index));
         
-        // Reset auto-advance timer when user manually navigates
-        clearInterval(autoAdvance);
-        setTimeout(() => {
-          setInterval(nextHeroSlide, 5000);
-        }, 5000);
+        // Keyboard navigation
+        dot.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft' && index > 0) {
+            this.goToSlide(index - 1);
+            this.dots[index - 1].focus();
+          } else if (e.key === 'ArrowRight' && index < this.dots.length - 1) {
+            this.goToSlide(index + 1);
+            this.dots[index + 1].focus();
+          }
+        });
       });
-    });
-  });
+      
+      // Touch/swipe support
+      let startX = 0;
+      let startY = 0;
+      
+      document.querySelector('.carousel')?.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      
+      document.querySelector('.carousel')?.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        const diffX = startX - endX;
+        const diffY = startY - endY;
+        
+        // Only trigger if horizontal swipe is more significant than vertical
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            this.nextSlide();
+          } else {
+            this.prevSlide();
+          }
+        }
+      }, { passive: true });
+    }
+    
+    goToSlide(index) {
+      if (index === this.currentSlide) return;
+      
+      // Remove active states
+      this.slides[this.currentSlide]?.classList.remove('carousel__slide--active');
+      this.dots[this.currentSlide]?.classList.remove('carousel__dot--active');
+      this.dots[this.currentSlide]?.setAttribute('aria-selected', 'false');
+      this.slides[this.currentSlide]?.setAttribute('aria-hidden', 'true');
+      
+      this.currentSlide = index;
+      
+      // Add active states
+      this.slides[this.currentSlide]?.classList.add('carousel__slide--active');
+      this.dots[this.currentSlide]?.classList.add('carousel__dot--active');
+      this.dots[this.currentSlide]?.setAttribute('aria-selected', 'true');
+      this.slides[this.currentSlide]?.setAttribute('aria-hidden', 'false');
+      
+      this.resetAutoAdvance();
+    }
+    
+    nextSlide() {
+      const nextIndex = (this.currentSlide + 1) % this.slides.length;
+      this.goToSlide(nextIndex);
+    }
+    
+    prevSlide() {
+      const prevIndex = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
+      this.goToSlide(prevIndex);
+    }
+    
+    startAutoAdvance() {
+      if (this.slides.length <= 1) return;
+      
+      this.autoAdvanceInterval = setInterval(() => {
+        console.log('Auto advancing from slide', this.currentSlide, 'to', (this.currentSlide + 1) % this.slides.length);
+        this.nextSlide();
+      }, autoAdvanceDelay);
+    }
+    
+    pauseAutoAdvance() {
+      clearInterval(this.autoAdvanceInterval);
+    }
+    
+    resumeAutoAdvance() {
+      this.startAutoAdvance();
+    }
+    
+    resetAutoAdvance() {
+      clearInterval(this.autoAdvanceInterval);
+      setTimeout(() => this.startAutoAdvance(), 1000);
+    }
+  }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new HeroCarousel());
+  } else {
+    new HeroCarousel();
+  }
 </script>
 
 <style>
-    .hero-carousel {
-        position: relative;
-        height: 100vh;
-        overflow: hidden;
-    }
+  .carousel {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-    .hero-slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        transition: opacity 1s ease-in-out;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-    }
+  .carousel__slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
 
-    .hero-slide.active {
-        opacity: 1;
-    }
+  .carousel__slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-    .hero-content {
-        padding: 0 5rem;
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-        max-width: 600px;
-    }
+  .carousel__slide--active {
+    opacity: 1;
+  }
 
-    .hero-content h1 {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        line-height: 1.2;
-    }
+  .carousel__image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 
-    .hero-content p {
-        font-size: 1.25rem;
-        margin-bottom: 2rem;
-        line-height: 1.5;
-        opacity: 0.95;
-    }
+  :global(.carousel__image) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
 
-    .hero-cta {
-        display: inline-block;
-        padding: 1rem 2rem;
-        background: rgba(255,255,255,0.2);
-        color: white;
-        text-decoration: none;
-        border-radius: 50px;
-        border: 2px solid rgba(255,255,255,0.3);
-        font-weight: 600;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-    }
+  .carousel__controls {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
 
-    .hero-cta:hover {
-        background: rgba(255,255,255,0.3);
-        border-color: rgba(255,255,255,0.5);
-        transform: translateY(-2px);
-    }
+  .carousel__dots {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
 
-    .hero-dots {
-        position: absolute;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 2rem;
-        z-index: 10;
-    }
+  .carousel__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    position: relative;
+  }
 
-    .hero-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      cursor: pointer;
-      transition: background 0.3s ease;
-      position: relative;
-    }
+  .carousel__dot--active {
+    background: white;
+  }
 
-    .hero-dot.active {
-      background: white;
-    }
+  .carousel__dot::after {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    border: 1px solid white;
+    border-radius: 50%;
+    transform: scale(0.8);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  }
 
-    .hero-dot::after {
-      content: "";
-      position: absolute;
-      inset: -12px;
-      border: 1px solid white;
-      border-radius: 50%;
-      transform: scale(0.8);
-      opacity: 0;
-      transition: transform 0.5s ease, opacity 0.5s ease;
-    }
+  .carousel__dot--active::after {
+    transform: scale(1);
+    opacity: 1;
+  }
 
-    .hero-dot.active::after {
-      transform: scale(1);
-      opacity: 1;
-    }
+  .carousel__dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+  }
 
-    .hero-dot:hover {
-        background: rgba(255,255,255,0.8);
-    }
+  .carousel__dot:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 4px;
+  }
 
   /* Responsive design */
-    @media (max-width: 768px) {
-        .hero-content {
-            padding: 0 2rem;
-        }
-        
-        .hero-content h1 {
-            font-size: 2.5rem;
-        }
-        
-        .hero-content p {
-            font-size: 1.1rem;
-        }
+  @media (max-width: 768px) {
+    .carousel__controls {
+      bottom: 1rem;
     }
+
+    .carousel__dots {
+      gap: 1rem;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .carousel__slide {
+      transition-duration: 0.3s;
+    }
+  }
 </style>

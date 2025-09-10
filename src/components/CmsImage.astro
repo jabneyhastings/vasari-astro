@@ -1,0 +1,58 @@
+---
+// src/components/CmsImage.astro with manual testing toggle
+export interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+  sizes?: string;
+  testNetlify?: boolean; // Manual override for testing
+}
+
+const { 
+  src, 
+  alt, 
+  width = 800, 
+  height, 
+  loading = 'lazy', 
+  class: className,
+  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw",
+  testNetlify = false
+} = Astro.props;
+
+// Use Netlify transforms if in production OR if manually testing
+const useNetlifyTransforms = !import.meta.env.DEV || testNetlify;
+
+const createNetlifyUrl = (w, h = height) => {
+  if (!useNetlifyTransforms) {
+    return src;
+  }
+  
+  const params = new URLSearchParams({
+    url: src,
+    f: 'auto',
+    q: '80',
+    w: w.toString(),
+    ...(h && { h: h.toString(), fit: 'cover' })
+  });
+  return `/.netlify/images?${params}`;
+};
+
+const srcset = useNetlifyTransforms ? [
+  `${createNetlifyUrl(Math.round(width * 0.5))} ${Math.round(width * 0.5)}w`,
+  `${createNetlifyUrl(width)} ${width}w`,
+  `${createNetlifyUrl(Math.round(width * 1.5))} ${Math.round(width * 1.5)}w`
+].join(', ') : undefined;
+---
+
+<img 
+  src={createNetlifyUrl(width)}
+  {srcset && { srcset }}
+  {useNetlifyTransforms && { sizes }}
+  alt={alt}
+  loading={loading}
+  class={className}
+  {height && { height }}
+/>

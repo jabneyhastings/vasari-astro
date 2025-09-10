@@ -20,20 +20,8 @@ content:
           - name: image
             label: Image
             type: image
-          - name: title
-            label: Title
-            type: string
-            required: false
-          - name: description
-            label: Description
-            type: text
-            required: false
-          - name: link
-            label: Link
-            type: string
-            required: false
-          - name: gradient
-            label: Gradient
+          - name: alt
+            label: Alt Text
             type: string
             required: false
 
@@ -65,6 +53,10 @@ content:
               - name: text
                 label: Text
                 type: text
+                required: false
+              - name: alt
+                label: Alt Text
+                type: string
                 required: false
 
       - name: textBlock

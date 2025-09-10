@@ -6,10 +6,7 @@ const pagesCollection = defineCollection({
     title: z.string(),
     heroCarousel: z.array(z.object({
       image: z.string().optional(),
-      title: z.string().optional(),
-      description: z.string().optional(),
-      link: z.string().optional(),
-      gradient: z.string().optional(), // For custom CSS gradients
+      alt: z.string().optional(),
     })).optional(),
     aboutSection: z.object({
       title: z.string(),
@@ -19,6 +16,7 @@ const pagesCollection = defineCollection({
       slides: z.array(z.object({
         image: z.string(),
         text: z.string().optional(),
+        alt: z.string().optional(),
       })),
     }).optional(),
     textBlock: z.object({

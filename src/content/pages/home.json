@@ -2,19 +2,24 @@
   "title": "Welcome to Vasari",
   "heroCarousel": [
     {
-      "image": "/uploads/hero1.jpg"
+      "image": "/uploads/hero1.jpg",
+      "alt": "Modern living room with large windows and minimalist furniture"
     },
     {
-      "image": "/uploads/hero2.jpg"
+      "image": "/uploads/hero2.jpg",
+      "alt": "Cozy reading nook with a view"
     },
     {
-      "image": "/uploads/hero3.jpg"
+      "image": "/uploads/hero3.jpg",
+      "alt": "Bright kitchen with modern appliances"
     },
     {
-      "image": "/uploads/hero4.jpg"
+      "image": "/uploads/hero4.jpg",
+      "alt": "Stylish dining area with a view"
     },
     {
-      "image": "/uploads/hero5.jpg"
+      "image": "/uploads/hero5.jpg",
+      "alt": "Luxurious bedroom with elegant decor"
     }
   ],
   "aboutSection": {
@@ -25,16 +30,20 @@
     "slides": [
       {
         "image": "/uploads/hero1.jpg",
-        "text": "Slide 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        "alt": "Modern living room with large windows and minimalist furniture",
+        "text": "At Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging."
       },
       {
-        "image": "/uploads/hero2.jpg"
+        "image": "/uploads/hero2.jpg",
+        "alt": "Cozy reading nook with a view"
       },
       {
-        "image": "/uploads/hero3.jpg"
+        "image": "/uploads/hero3.jpg",
+        "alt": "Bright kitchen with modern appliances"
       },
       {
-        "image": "/uploads/hero4.jpg"
+        "image": "/uploads/hero4.jpg",
+        "alt": "Stylish dining area with a view"
       }
     ]
   },

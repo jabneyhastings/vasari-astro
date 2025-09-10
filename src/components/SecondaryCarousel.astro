@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-
+import CmsImage from '../components/CmsImage.astro';
 import rightArrow from '../images/arrow-right.svg';
 import leftArrow from '../images/arrow-left.svg';
 
@@ -10,121 +10,178 @@ interface Slide {
 }
 
 interface Props {
-    title: string;
     slides: Slide[];
 }
 
 const { slides } = Astro.props;
 ---
 
-<section class="secondary-carousel-section">
-    <div class="carousel-header">
-        <div class="carousel-controls">
-            <button class="carousel-btn" id="prevBtn"><Image src={leftArrow} alt="Previous" width="56" height="28" /></button>
-            <button class="carousel-btn" id="nextBtn"><Image src={rightArrow} alt="Next" width="56" height="28" /></button>
+<section class="carousel">
+    <header class="carousel__header">
+        <div class="carousel__controls">
+            <button class="carousel__btn" id="prevBtn">
+                <Image src={leftArrow} alt="Previous" width="56" height="28" />
+            </button>
+            <button class="carousel__btn" id="nextBtn">
+                <Image src={rightArrow} alt="Next" width="56" height="28" />
+            </button>
         </div>
-    </div>
+    </header>
 
-    <div class="secondary-carousel">
-        <div class="carousel-track" id="carouselTrack">
+    <div class="carousel__viewport">
+        <div class="carousel__track" id="carouselTrack">
             {slides.map((slide) => (
-                <div class="carousel-slide">
-                    <div class="slide-image">
-                        <img src={slide.image} alt="Carousel slide" />
-                    </div>
-                    {slide.text && (
-                        <div class="slide-text">
-                            <p>{slide.text}</p>
-                        </div>
-                    )}
+            <div class="carousel__slide">
+                <div class="carousel__media">
+                    <CmsImage 
+                    src={slide.image}
+                    alt="Service Image"
+                    width={480}
+                    loading="lazy"
+                    />
                 </div>
+                {slide.text && (
+                    <div class="carousel__caption">
+                        <p>{slide.text}</p>
+                    </div>
+                )}
+            </div>
             ))}
         </div>
     </div>
 </section>
 
 <style>
-/* Secondary Carousel */
-    .secondary-carousel-section {
-        padding: 4rem 2rem;
-    }
+.carousel {
+    padding: 0 2rem;
+    max-width: var(--s-page-width);
+    margin: 0 auto;
+}
 
-    .carousel-header {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        max-width: 1200px;
-        margin: 0 auto 2rem;
-    }
+.carousel__header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 2rem;
+}
 
-    .carousel-header h2 {
-        font-size: 2rem;
-        color: #333;
-    }
+.carousel__title {
+    font-size: 2rem;
+}
 
-    .carousel-controls {
-        display: flex;
-        gap: 1rem;
-    }
+.carousel__controls {
+    display: flex;
+    gap: 1rem;
+}
 
-    .carousel-btn {
-        border: none;
-        background: transparent;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
+.carousel__btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.carousel__btn:hover {
+    opacity: 0.6;
+}
+
+.carousel__viewport {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel__track {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel__slide {
+    flex: 0 0 calc(40% - 1rem);
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+    background: var(--c-c-background);
+    overflow: hidden;
+}
+
+.carousel__media {
+    flex: 1;
+    height: 400px
+}
+
+:global(.carousel__media img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.carousel__caption {
+    padding: 1.5rem 0;
+    text-align: left;
+}
+
+.carousel__caption p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .carousel__header {
         justify-content: center;
-        transition: opacity 0.3s ease;
     }
-
-    .carousel-btn:hover {
-        opacity: 0.5;
+    .carousel__slide {
+        flex: 0 0 100%;
+        margin-right: 1rem;
     }
-
-    .secondary-carousel {
-        position: relative;
-        max-width: 1200px;
-        margin: 0 auto;
-        overflow: hidden;
-    }
-
-    .carousel-track {
-        display: flex;
-        transition: transform 0.5s ease;
-    }
-
-    .carousel-slide {
-        flex: 0 0 calc(40% - 1rem);
-        margin-right: 2rem;
-        background: white;
-        overflow: hidden;
-    }
-
-    .slide-text {
-        padding: 1.5rem;
-        text-align: center;
-        color: #666;
-    }
-
-    .carousel-track {
-        display: flex;
-        transition: transform 0.3s ease;
-    }
-
-    .slide-image {
-        height: 400px;
-        background: #f0f0f0;
-        margin-bottom: 1rem;
-    }
-
-    .slide-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .slide-text p {
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
+}
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const track = document.getElementById("carouselTrack");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        if (track && prevBtn && nextBtn) {
+            let currentPosition = 0;
+
+            const getSlideWidth = () => {
+                const slide = track.querySelector(".carousel__slide");
+                return slide ? slide.clientWidth + 16 : 0; // slide width + margin
+            };
+
+            const updatePosition = () => {
+                track.style.transform = `translateX(-${currentPosition}px)`;
+            };
+
+            nextBtn.addEventListener("click", () => {
+                const maxScroll = track.scrollWidth - track.parentElement.clientWidth;
+                const step = getSlideWidth();
+                if (currentPosition + step <= maxScroll) {
+                    currentPosition += step;
+                    updatePosition();
+                }
+            });
+
+            prevBtn.addEventListener("click", () => {
+                const step = getSlideWidth();
+                if (currentPosition - step >= 0) {
+                    currentPosition -= step;
+                    updatePosition();
+                }
+            });
+
+            window.addEventListener("resize", () => {
+                // Reset position on resize to prevent broken offsets
+                currentPosition = 0;
+                updatePosition();
+            });
+        }
+    });
+</script>

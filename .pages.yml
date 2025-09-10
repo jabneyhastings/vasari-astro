@@ -46,7 +46,9 @@ content:
             type: string
           - name: content
             label: Content
-            type: richtext   # <-- use PagesCMS built-in richtext editor
+            type: rich-text
+            options:
+              media: false
 
       - name: secondaryCarousel
         label: Secondary Carousel
@@ -71,4 +73,6 @@ content:
         fields:
           - name: content
             label: Content
-            type: richtext
+            type: rich-text
+            options:
+              media: false

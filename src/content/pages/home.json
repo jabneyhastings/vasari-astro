@@ -1,6 +1,11 @@
 {
-  "title": "Welcome to Vasari",
+  "title": "Welcome to Vasari Design Interior Design Services",
+  "description": "Vasari Design - Interior Design Services",
   "heroCarousel": [
+    {
+      "image": "/uploads/hero4.jpg",
+      "alt": "Stylish dining area with a view"
+    },
     {
       "image": "/uploads/hero1.jpg",
       "alt": "Modern living room with large windows and minimalist furniture"
@@ -14,12 +19,12 @@
       "alt": "Bright kitchen with modern appliances"
     },
     {
-      "image": "/uploads/hero4.jpg",
-      "alt": "Stylish dining area with a view"
-    },
-    {
       "image": "/uploads/hero5.jpg",
       "alt": "Luxurious bedroom with elegant decor"
+    },
+    {
+      "image": "/uploads/hero6.jpg",
+      "alt": "Chic bathroom with contemporary fixtures"
     }
   ],
   "aboutSection": {
@@ -29,21 +34,25 @@
   "secondaryCarousel": {
     "slides": [
       {
-        "image": "/uploads/hero1.jpg",
-        "alt": "Modern living room with large windows and minimalist furniture",
-        "text": "At Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging."
+        "image": "/uploads/slider1.jpg",
+        "alt": "",
+        "text": "<h3>At Vasari</h3><p>At Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging.</p>"
       },
       {
-        "image": "/uploads/hero2.jpg",
-        "alt": "Cozy reading nook with a view"
+        "image": "/uploads/slider2.jpg",
+        "alt": ""
       },
       {
-        "image": "/uploads/hero3.jpg",
-        "alt": "Bright kitchen with modern appliances"
+        "image": "/uploads/slider3.jpg",
+        "alt": ""
       },
       {
-        "image": "/uploads/hero4.jpg",
-        "alt": "Stylish dining area with a view"
+        "image": "/uploads/slider4.jpg",
+        "alt": ""
+      },
+      {
+        "image": "/uploads/slider5.jpg",
+        "alt": ""
       }
     ]
   },

@@ -52,7 +52,9 @@ content:
                 type: image
               - name: text
                 label: Text
-                type: text
+                type: rich-text
+                options:
+                  media: false
                 required: false
               - name: alt
                 label: Alt Text

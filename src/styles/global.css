@@ -2,14 +2,16 @@
     /* Colours */
     --c-font: #575148;
     --c-background: #F1EEE9;
-    --c-footer-background: #000;
+    --c-footer-background: #080A1E;
 
     /* Sizes */
     --s-page-width: 1200px;
 
     /* Fonts */
-    --ff: 'EB Garamond', serif;
-    --fs: font-size: 22px;
+    --ff: "EB Garamond", serif;
+    --fs: 22px;
+    --fs-large: 40px;
+    --fs-small: 18px;
 }
 
 * {
@@ -18,36 +20,53 @@
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 120px;
-    background: #000;
+html, body {
+    height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 120px;
+    }
 }
 
 body {
     font-family: var(--ff);
-    font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
-    line-height: 1.6;
+    line-height: 1.8;
+    letter-spacing: -0.02em;
     background: var(--c-background);
     font-size: var(--fs);
     color: var(--c-font);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-p {
-    font-size: 18px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: var(--fs-large);
+    margin-bottom: 1rem;
+}
+
+h3 {
+    font-size: 32px;
+    margin-bottom: 1rem;
 }
 
 table td {
-    padding: 0 0.5rem 01rem 0;
+    padding: 0 0.5rem 0.5rem 0;
     font-size: var(--fs);
 }
 
@@ -94,11 +113,6 @@ table td {
     align-items: start;
 }
 
-.about-header h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
 .about-content {
     line-height: 1.8;
 }
@@ -116,7 +130,6 @@ table td {
 }
 
 main {
-    min-height: 100vh;
     background: var(--c-background);
     position: relative;
     z-index: 1;
@@ -124,13 +137,11 @@ main {
 
 /* Footer */
 .footer {
-    position: sticky;
-    bottom: 0;
-    left: 0;
     width: 100%;
     background: var(--c-footer-background);
     color: white;
     padding: 3rem 2rem 2rem;
+    font-size: var(--fs-small);
 }
 
 .footer a {
@@ -156,8 +167,15 @@ main {
     color: white;
 }
 
-.footer-section p {
-    line-height: 1.6;
+.footer-section p,
+.footer__copyright p {
+    line-height: 1.4;
+    font-size: var(--fs-small);
+}
+
+.footer__copyright {
+    text-align: center;
+    padding: 2rem 0 0 0;
 }
 
 /* Responsive */

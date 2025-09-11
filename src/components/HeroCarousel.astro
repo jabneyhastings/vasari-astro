@@ -57,31 +57,29 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
   class HeroCarousel {
     constructor() {
       this.currentSlide = 0;
-      this.container = document.querySelector('.carousel__slides');
-      this.slides = this.container.querySelectorAll('.carousel__slide');
+      this.slides = document.querySelectorAll('.carousel__slide');
       this.dots = document.querySelectorAll('.carousel__dot');
-      this.autoAdvanceInterval = null;
+      this.autoAdvanceTimer = null;
       
       if (this.slides.length <= 1) return;
-      
+
       this.init();
     }
-    
+
     init() {
       this.bindEvents();
       this.startAutoAdvance();
-      
-      // Only pause on focus for accessibility (removed hover pause)
+
+      // Accessibility: pause while focused
       const carousel = document.querySelector('.carousel');
       carousel?.addEventListener('focusin', () => this.pauseAutoAdvance());
       carousel?.addEventListener('focusout', () => this.resumeAutoAdvance());
     }
-    
+
     bindEvents() {
       this.dots.forEach((dot, index) => {
         dot.addEventListener('click', () => this.goToSlide(index));
-        
-        // Keyboard navigation
+
         dot.addEventListener('keydown', (e) => {
           if (e.key === 'ArrowLeft' && index > 0) {
             this.goToSlide(index - 1);
@@ -92,86 +90,84 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
           }
         });
       });
-      
+
       // Touch/swipe support
       let startX = 0;
       let startY = 0;
-      
-      document.querySelector('.carousel')?.addEventListener('touchstart', (e) => {
+
+      this.carousel?.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
       }, { passive: true });
-      
-      document.querySelector('.carousel')?.addEventListener('touchend', (e) => {
+
+      this.carousel?.addEventListener('touchend', (e) => {
         const endX = e.changedTouches[0].clientX;
         const endY = e.changedTouches[0].clientY;
         const diffX = startX - endX;
         const diffY = startY - endY;
-        
-        // Only trigger if horizontal swipe is more significant than vertical
+
         if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-          if (diffX > 0) {
-            this.nextSlide();
-          } else {
-            this.prevSlide();
-          }
+          diffX > 0 ? this.nextSlide() : this.prevSlide();
         }
       }, { passive: true });
     }
-    
+
     goToSlide(index) {
       if (index === this.currentSlide) return;
-      
+
       // Remove active states
       this.slides[this.currentSlide]?.classList.remove('carousel__slide--active');
       this.dots[this.currentSlide]?.classList.remove('carousel__dot--active');
       this.dots[this.currentSlide]?.setAttribute('aria-selected', 'false');
       this.slides[this.currentSlide]?.setAttribute('aria-hidden', 'true');
-      
+
       this.currentSlide = index;
-      
+
       // Add active states
       this.slides[this.currentSlide]?.classList.add('carousel__slide--active');
       this.dots[this.currentSlide]?.classList.add('carousel__dot--active');
       this.dots[this.currentSlide]?.setAttribute('aria-selected', 'true');
       this.slides[this.currentSlide]?.setAttribute('aria-hidden', 'false');
-      
+
       this.resetAutoAdvance();
     }
-    
+
     nextSlide() {
       const nextIndex = (this.currentSlide + 1) % this.slides.length;
       this.goToSlide(nextIndex);
     }
-    
+
     prevSlide() {
       const prevIndex = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
       this.goToSlide(prevIndex);
     }
-    
+
     startAutoAdvance() {
-      if (this.slides.length <= 1) return;
-      
-      this.autoAdvanceInterval = setInterval(() => {
-        console.log('Auto advancing from slide', this.currentSlide, 'to', (this.currentSlide + 1) % this.slides.length);
+      this.clearTimers();
+      this.autoAdvanceTimer = setTimeout(() => {
         this.nextSlide();
+        this.startAutoAdvance(); // reschedule
       }, autoAdvanceDelay);
     }
-    
+
     pauseAutoAdvance() {
-      clearInterval(this.autoAdvanceInterval);
+      this.clearTimers();
     }
-    
+
     resumeAutoAdvance() {
       this.startAutoAdvance();
     }
-    
+
     resetAutoAdvance() {
-      clearInterval(this.autoAdvanceInterval);
-      setTimeout(() => this.startAutoAdvance(), 1000);
+      this.startAutoAdvance();
+    }
+
+    clearTimers() {
+      clearTimeout(this.autoAdvanceTimer);
+      this.autoAdvanceTimer = null;
     }
   }
-  
+
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => new HeroCarousel());
@@ -183,7 +179,7 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
 <style>
   .carousel {
     position: relative;
-    height: 100vh;
+    height: 100svh;
     overflow: hidden;
   }
 
@@ -270,22 +266,6 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
 
   .carousel__dot:hover {
     background: rgba(255, 255, 255, 0.8);
-  }
-
-  .carousel__dot:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.8);
-    outline-offset: 4px;
-  }
-
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .carousel__controls {
-      bottom: 1rem;
-    }
-
-    .carousel__dots {
-      gap: 1rem;
-    }
   }
 
   /* Reduced motion support */

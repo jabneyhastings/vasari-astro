@@ -56,11 +56,11 @@ const { title, description } = Astro.props;
   </head>
   <body id="home">
     <header class="header">
-      <a href="#services">Services</a>
+      <a href="#services" class="text-link">Services</a>
       <a href="#home" class="logo">
-        <Image src={logo} alt="Vasari Design" width="105" height="93" loading="eager" />
+        <Image src={logo} alt="Vasari Design" width="105" height="93" loading="eager" fetchpriority="high" />
       </a>
-      <a href="#about">About</a>
+      <a href="#about" class="text-link">About</a>
     </header>
 
     <main>

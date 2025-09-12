@@ -143,79 +143,58 @@ const { slides } = Astro.props;
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const track = document.getElementById("sliderTrack");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+  const track = document.getElementById("sliderTrack");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
 
-    if (!track || !prevBtn || !nextBtn) return;
+  if (!track || !prevBtn || !nextBtn) return;
 
-    let currentIndex = 0;
-    const slides = track.querySelectorAll(".slider__slide");
+  let currentIndex = 0;
+  const slides = track.querySelectorAll(".slider__slide");
 
-    const getVisibleCount = () => {
-      const slideWidth = slides[0].clientWidth;
-      const viewportWidth = track.parentElement!.clientWidth;
-      return Math.floor(viewportWidth / slideWidth) || 1;
-    };
+  const getVisibleCount = () => {
+    const slideWidth = slides[0].clientWidth;
+    const viewportWidth = track.parentElement!.clientWidth;
+    return Math.floor(viewportWidth / slideWidth) || 1;
+  };
 
-    const updatePosition = () => {
-      const slideWidth = slides[0].clientWidth + parseInt(getComputedStyle(slides[0]).marginRight);
-      const offset = currentIndex * slideWidth;
-      track.style.transform = `translateX(-${offset}px)`;
+  const updatePosition = () => {
+    const slideWidth = slides[0].clientWidth + parseInt(getComputedStyle(slides[0]).marginRight);
+    const offset = currentIndex * slideWidth;
+    track.style.transform = `translateX(-${offset}px)`;
 
-      // Update button states
-      prevBtn.classList.toggle("is-disabled", currentIndex === 0);
-      nextBtn.classList.toggle(
-        "is-disabled",
-        currentIndex >= slides.length - getVisibleCount()
-      );
-    };
+    // Update button states
+    prevBtn.classList.toggle("is-disabled", currentIndex === 0);
+    nextBtn.classList.toggle(
+      "is-disabled",
+      currentIndex >= slides.length - getVisibleCount()
+    );
+  };
 
-    const goNext = () => {
-      if (currentIndex < slides.length - getVisibleCount()) {
-        currentIndex++;
-        updatePosition();
-      }
-    };
-
-    const goPrev = () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updatePosition();
-      }
-    };
-
-    nextBtn.addEventListener("click", goNext);
-    prevBtn.addEventListener("click", goPrev);
-
-    // Swipe / touch support
-    let startX = 0;
-    let deltaX = 0;
-
-    track.addEventListener("touchstart", (e) => {
-      startX = e.touches[0].clientX;
-      deltaX = 0;
-    });
-
-    track.addEventListener("touchmove", (e) => {
-      deltaX = e.touches[0].clientX - startX;
-    });
-
-    track.addEventListener("touchend", () => {
-      if (deltaX > 50) {
-        goPrev();
-      } else if (deltaX < -50) {
-        goNext();
-      }
-    });
-
-    // Reset on resize
-    window.addEventListener("resize", () => {
-      currentIndex = 0;
+  const goNext = () => {
+    if (currentIndex < slides.length - getVisibleCount()) {
+      currentIndex++;
       updatePosition();
-    });
+    }
+  };
 
-    // Init
+  const goPrev = () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updatePosition();
+    }
+  };
+
+  nextBtn.addEventListener("click", goNext);
+  prevBtn.addEventListener("click", goPrev);
+
+  // Reset on resize
+  window.addEventListener("resize", () => {
+    currentIndex = 0;
     updatePosition();
   });
+
+  // Init
+  updatePosition();
+});
 </script>

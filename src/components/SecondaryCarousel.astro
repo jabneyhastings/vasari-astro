@@ -188,10 +188,21 @@ const { slides } = Astro.props;
   nextBtn.addEventListener("click", goNext);
   prevBtn.addEventListener("click", goPrev);
 
-  // Reset on resize
+  // Only reset on significant resize (not just mobile scrolling)
+  let resizeTimeout: ReturnType<typeof setTimeout>;
+  let lastWidth = window.innerWidth;
+  
   window.addEventListener("resize", () => {
-    currentIndex = 0;
-    updatePosition();
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const currentWidth = window.innerWidth;
+      // Only reset if width actually changed significantly (orientation change, etc.)
+      if (Math.abs(currentWidth - lastWidth) > 50) {
+        currentIndex = 0;
+        lastWidth = currentWidth;
+      }
+      updatePosition();
+    }, 150);
   });
 
   // Init

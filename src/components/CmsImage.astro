@@ -1,6 +1,8 @@
 ---
 import { Image } from "astro:assets";
 
+const images = import.meta.glob('../assets/uploads/*', { eager: true });
+
 export interface Props {
   src: string; // e.g. "/uploads/example.jpg"
   alt: string;
@@ -21,24 +23,26 @@ const {
   class: className
 } = Astro.props;
 
-// Default: no image yet
-let imageImport: any = null;
-let optimized = false;
+  const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+  const cleanSrc = src.startsWith('/') ? src.slice(1) : src;
+  const fallbackSrc = `${baseUrl}${cleanSrc}`;
 
-const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-const cleanSrc = src.startsWith('/') ? src.slice(1) : src;
-const fallbackSrc = `${baseUrl}${cleanSrc}`;
+  let imageImport: any = null;
+  let optimized = false;
 
-try {
   const fileName = src.split("/").pop();
-  imageImport = await import(/* @vite-ignore */ `../assets/uploads/${fileName}`);
-  optimized = true;
-} catch (err) {
-  console.warn(
-    `[CmsImage] Could not optimize "${src}". Falling back to <img>. Reason:`,
-    err?.message ?? err
-  );
-}
+  const imagePath = `../assets/uploads/${fileName}`;
+
+  console.log('🔍 Looking for:', imagePath);
+  console.log('📁 Available images:', Object.keys(images));
+
+  if (images[imagePath]) {
+    imageImport = images[imagePath];
+    optimized = true;
+    console.log('✅ Found optimized image');
+  } else {
+    console.log('❌ Image not found in assets, using fallback');
+  }
 ---
 
 {optimized && imageImport ? (

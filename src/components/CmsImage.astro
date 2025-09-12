@@ -1,82 +1,61 @@
 ---
+import { Image } from "astro:assets";
+
 export interface Props {
-  src: string;
+  src: string; // e.g. "/uploads/example.jpg"
   alt: string;
-  width?: number;                       // desired base width for transforms
-  height?: number;                      // optional height (keeps aspect ratio)
-  loading?: 'lazy' | 'eager';
-  class?: string;
+  width?: number;
+  height?: number;
   sizes?: string;
-  testNetlify?: boolean;                // dev override to test Netlify transforms locally
+  loading?: "lazy" | "eager";
+  class?: string;
 }
 
-const rawProps = Astro.props as Record<string, any>;
 const {
   src,
   alt,
-  width = 800,
-  height,
-  loading = 'lazy',
-  class: className,
-  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw",
-  testNetlify = false
-} = Astro.props as Props;
+  width = 1200,
+  height = 800,
+  sizes = "100vw",
+  loading = "lazy",
+  class: className
+} = Astro.props;
 
-// Use Netlify transforms in production, or when manually overriding in dev
-const useNetlifyTransforms = (!import.meta.env.DEV) || Boolean(testNetlify);
+// Default: no image yet
+let imageImport: any = null;
+let optimized = false;
 
-/**
- * Build a Netlify image transform URL.
- * Note: for local dev this returns the source unchanged unless testNetlify=true.
- */
-const createNetlifyUrl = (w: number, h?: number): string => {
-  if (!useNetlifyTransforms) return src;
-
-  const params = new URLSearchParams({
-    url: src,
-    f: 'auto',    // choose best format (webp/avif) automatically
-    q: '80',
-    w: String(Math.round(w)),
-    // optional: h and fit only included if height was provided
-    ...(h ? { h: String(Math.round(h)), fit: 'cover' } : {})
-  });
-
-  return '/.netlify/images?' + params.toString();
-};
-
-/**
- * Build a reasonable set of widths for srcset.
- * We keep it small and unique (0.5x, 1x, 1.5x) to avoid creating dozens of variants.
- */
-const widths = Array.from(new Set([
-  Math.max(1, Math.round(width * 0.5)),
-  Math.max(1, Math.round(width)),
-  Math.max(1, Math.round(width * 1.5)),
-]));
-
-// If using Netlify transforms, build the srcset string; otherwise undefined
-const srcset = useNetlifyTransforms
-  ? widths.map((w) => `${createNetlifyUrl(w, height)} ${w}w`).join(', ')
-  : undefined;
-
-// Only emit width/height attributes if the caller explicitly passed them
-const hasExplicitWidth = rawProps.width !== undefined;
-const hasExplicitHeight = rawProps.height !== undefined;
-
-// If both width and height were passed, set an inline aspect-ratio style to avoid layout shift
-const aspectStyle = (hasExplicitWidth && hasExplicitHeight)
-  ? `aspect-ratio: ${Math.round(width)}/${Math.round(height as number)};`
-  : undefined;
+try {
+  // Extract filename (assumes build script copied uploads → src/assets/uploads)
+  const fileName = src.split("/").pop();
+  imageImport = await import(`../assets/uploads/${fileName}`);
+  optimized = true;
+} catch (err) {
+  console.warn(
+    `[CmsImage] Could not optimize "${src}". Falling back to <img>. Reason:`,
+    err?.message ?? err
+  );
+}
 ---
 
-<img
-  src={useNetlifyTransforms ? createNetlifyUrl(width, height) : src}
-  srcset={srcset}
-  sizes={useNetlifyTransforms ? sizes : undefined}
-  alt={alt}
-  loading={loading}
-  class={className}
-  width={hasExplicitWidth ? width : undefined}
-  height={hasExplicitHeight ? height : undefined}
-  style={aspectStyle}
-/>
+{optimized && imageImport ? (
+  <Image
+    src={imageImport.default}
+    alt={alt}
+    width={width}
+    height={height}
+    sizes={sizes}
+    loading={loading}
+    class={className}
+  />
+) : (
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    sizes={sizes}
+    loading={loading}
+    class={className}
+  />
+)}

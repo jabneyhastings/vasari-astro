@@ -4,21 +4,8 @@ export interface Props {
   description?: string;
 }
 
-import { Image } from 'astro:assets';
-
-import SocialLinks from "../components/SocialLinks.astro";
-
-import logo from '../images/logo.png';
-import emblem from '../images/emblem.png';
-// import xIcon from "../images/x.svg?url";
-import instagramIcon from "../images/instagram.svg?url";
-// import behanceIcon from "../images/behance.svg?url";
-
-const socialLinks = [
-  // { name: "X", url: "https://x.com/vasaridesign", icon: xIcon },
-  { name: "Instagram", url: "https://instagram.com/vasaridesign_", icon: instagramIcon },
-  // { name: "Behance", url: "https://behance.net/vasaridesign", icon: behanceIcon },
-];
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
 import '../styles/fonts.css';
 import '../styles/global.css';
@@ -47,7 +34,7 @@ const { title, description } = Astro.props;
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://vasaridesign.com/" />
-    <meta name="theme-color" content="#080A1E" />
+    <meta name="theme-color" content="#F1EEE9" />
 
     <link rel="preload" href="/fonts/eb-garamond-regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/eb-garamond-regular.woff" as="font" type="font/woff" crossorigin>
@@ -55,52 +42,14 @@ const { title, description } = Astro.props;
     <title>Vasari Design - {title}</title>
   </head>
   <body id="home">
-    <header class="header">
-      <a href="#services" class="text-link">Services</a>
-      <a href="#home" class="logo">
-        <Image src={logo} alt="Vasari Design" width="105" height="93" loading="eager" fetchpriority="high" />
-      </a>
-      <a href="#about" class="text-link">About</a>
-    </header>
+
+    <Header />
 
     <main>
       <slot />
     </main>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-section">
-          <Image src={emblem} alt="Vasari Design" width="55" height="56" />
-          <p>
-            At Vasari, we believe a home should offer more than visual beauty alone — it should
-            offer depth, clarity, and a sense of belonging.
-          </p>
-        </div>
-        <div class="footer-section">
-          <table>
-            <tr>
-              <td class="bold">London:</td>
-              <td><a href="tel:+442035445555">+44 0203 5445 5555</a></td>
-            </tr>
-            <tr>
-              <td class="bold">Dallas:</td>
-              <td><a href="tel:+18173455555">+1 817 345 5555</a></td>
-            </tr>
-            <tr>
-              <td class="bold">Support:</td>
-              <td><a href="mailto:info@vasarilondon.com">info@vasarilondon.com</a></td>
-            </tr>
-          </table>
-        </div>
-        <div class="footer-section">
-          <SocialLinks links={socialLinks} />
-        </div>
-      </div>
-
-      <div class="footer__copyright">
-        <p>&copy; {new Date().getFullYear()} Vasari. All rights reserved.</p>
-      </div>
-    </footer>
+    <Footer />
 
     <script src="../scripts/global.js"></script>
   </body>

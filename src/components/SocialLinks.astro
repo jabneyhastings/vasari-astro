@@ -1,52 +1,31 @@
 ---
-interface SocialLink {
-  name: string;
-  url: string;
-  icon: string; // will always be a URL because of ?url
-}
-
-interface Props {
-  links: SocialLink[];
+export interface Props {
+  links: Array<{
+    name: string;
+    url: string;
+  }>;
+  class?: string;
 }
 
 const { links } = Astro.props;
 ---
 
-<div class="social-links">
+<ul class="social-links">
   {links.map((link) => (
-    <a
-      class="social-links__item"
-      href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={link.name}
-    >
-      <img src={link.icon} alt={link.name} width="13" height="13" />
-    </a>
+    <li>
+      <a href={link.url} target="_blank" rel="noopener noreferrer">
+        {link.name}
+      </a>
+    </li>
   ))}
-</div>
+</ul>
 
 <style>
 .social-links {
+  list-style: none;
   display: flex;
   gap: 1rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.social-links__item {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.3s ease;
-}
-
-.social-links__item:hover {
-  opacity: 0.6;
+  padding: 0;
+  margin: 0;
 }
 </style>

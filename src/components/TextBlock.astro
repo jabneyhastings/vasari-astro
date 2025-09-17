@@ -1,0 +1,59 @@
+---
+export interface Props {
+  title?: string;
+  content: string;
+  id?: string;
+  className?: string;
+}
+
+const { title, content, id, className = '' } = Astro.props;
+---
+
+<section class={`text-block ${className}`} id={id}>
+  {title && (
+    <div class="text-block__header">
+      <h2 class="text-block__title">{title}</h2>
+    </div>
+  )}
+  <div class={`text-block__content ${!title ? 'text-block__content--full-width' : ''}`} set:html={content} />
+</section>
+
+<style>
+    .text-block {
+    padding: var(--s-padding) 2rem;
+    max-width: var(--s-page-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 3rem;
+    align-items: start;
+    }
+
+    .text-block__header {
+    /* Inherits grid positioning */
+    }
+
+    .text-block__title {
+    margin: 0;
+    }
+
+    .text-block__content {
+        line-height: 1.8;
+    }
+
+    .text-block__content--full-width {
+        max-width: 800px;
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 0 2rem;
+        margin: 0 auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .text-block {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+</style>

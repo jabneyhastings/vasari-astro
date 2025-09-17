@@ -1,0 +1,92 @@
+---
+import SocialLinks from "../components/SocialLinks.astro";
+
+const socialLinks = [
+  { name: "Instagram", url: "https://instagram.com/vasaridesign_" },
+  // { name: "X", url: "https://x.com/vasaridesign" },
+  // { name: "Behance", url: "https://behance.net/vasaridesign" },
+];
+---
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Vasari Design</h3>
+            <p>
+            At Vasari, we believe a home should offer more than visual beauty alone — it should
+            offer depth, clarity, and a sense of belonging.
+            </p>
+        </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <table>
+                <tr>
+                    <td class="bold">London:</td>
+                    <td>
+                        <a href="tel:+447903139144">+44 7903 139 144</a>
+                        <a href="mailto:leigh@vasaridesign.co.uk">leigh@vasaridesign.co.uk</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bold">Dallas:</td>
+                    <td>
+                        <a href="tel:+18172715844">+1 817 271 5844</a>
+                        <a href="mailto:roman@vasaridesign.com">roman@vasaridesign.com</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bold">Support:</td>
+                    <td><a href="mailto:info@vasaridesign.com">info@vasaridesign.com</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="footer-section">
+            <h3>Follow</h3>
+            <SocialLinks links={socialLinks} />
+        </div>
+    </div>
+
+    <div class="footer__copyright">
+        <p>&copy; {new Date().getFullYear()} Vasari. All rights reserved.</p>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        width: 100%;
+        padding: 0 2rem;
+        font-size: var(--fs-small);
+    }
+
+    .footer-content {
+        padding-bottom: 80px;
+        max-width: var(--s-page-width);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 3rem;
+    }
+
+    .footer-section p,
+    .footer__copyright p {
+        line-height: 1.4;
+        font-size: var(--fs-small);
+    }
+
+    .footer__copyright {
+        text-align: center;
+        padding: 0 0 50px 0;
+    }
+
+    .footer table td {
+        padding: 0 0.5rem 0.5rem 0;
+        vertical-align: top;
+    }
+
+    @media (max-width: 768px) {
+        .footer-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+</style>

@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import HeroCarousel from '../components/HeroCarousel.astro';
 import SecondaryCarousel from '../components/SecondaryCarousel.astro';
+import TextBlock from '../components/TextBlock.astro';
 import { getEntry } from 'astro:content';
 
 const homeData = await getEntry('pages', 'home');
@@ -17,14 +18,14 @@ const { heroCarousel, aboutSection, secondaryCarousel, textBlock } = homeData.da
     <!-- Hero Carousel -->
     {heroCarousel && <HeroCarousel slides={heroCarousel} />}
 
-  <!-- About Section -->
+    <!-- About Section -->
     {aboutSection && (
-        <section id="about" class="about-section">
-            <div class="about-header">
-                <h2>{aboutSection.title}</h2>
-            </div>
-            <div class="about-content" set:html={aboutSection.content} />
-        </section>
+        <TextBlock 
+            id="about" 
+            className="about-section"
+            title={aboutSection.title}
+            content={aboutSection.content}
+        />
     )}
 
     <!-- Secondary Carousel -->
@@ -36,10 +37,10 @@ const { heroCarousel, aboutSection, secondaryCarousel, textBlock } = homeData.da
         )}
     </section>
 
-  <!-- Text Block -->
+    <!-- Text Block -->
     {textBlock && (
-        <section class="text-block">
-            <p>{textBlock.content}</p>
-        </section>
+        <TextBlock
+            content={textBlock.content}
+        />
     )}
 </Layout>

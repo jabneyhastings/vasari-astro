@@ -33,15 +33,9 @@ const {
   const fileName = src.split("/").pop();
   const imagePath = `../assets/uploads/${fileName}`;
 
-  console.log('🔍 Looking for:', imagePath);
-  console.log('📁 Available images:', Object.keys(images));
-
   if (images[imagePath]) {
     imageImport = images[imagePath];
     optimized = true;
-    console.log('✅ Found optimized image');
-  } else {
-    console.log('❌ Image not found in assets, using fallback');
   }
 ---
 

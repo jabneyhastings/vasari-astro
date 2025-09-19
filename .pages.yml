@@ -37,6 +37,7 @@ content:
             type: rich-text
             options:
               media: false
+              output: html
 
       - name: secondaryCarousel
         label: Secondary Carousel
@@ -55,6 +56,7 @@ content:
                 type: rich-text
                 options:
                   media: false
+                  output: html
                 required: false
               - name: alt
                 label: Alt Text
@@ -70,7 +72,7 @@ content:
             type: rich-text
             options:
               media: false
-
+              output: html
   - name: "about"
     label: "About Page"
     type: file
@@ -90,6 +92,7 @@ content:
         type: rich-text
         options:
           media: false
+          output: html
 
   - name: "services"
     label: "Services Page"
@@ -110,6 +113,7 @@ content:
         type: rich-text
         options:
           media: false
+          output: html
 
 collections:
   - name: "pages"

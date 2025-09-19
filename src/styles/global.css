@@ -90,3 +90,9 @@ main {
     position: relative;
     z-index: 1;
 }
+
+.page-content {
+    max-width: var(--s-page-width);
+    margin: 0 auto;
+    padding: 80px 2rem;
+}

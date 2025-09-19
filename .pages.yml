@@ -70,3 +70,51 @@ content:
             type: rich-text
             options:
               media: false
+
+  - name: "about"
+    label: "About Page"
+    type: file
+    path: "src/content/pages/about.json"
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: string
+      - name: heroImage
+        label: Hero Image
+        type: image
+      - name: content
+        label: Content
+        type: rich-text
+        options:
+          media: false
+
+  - name: "services"
+    label: "Services Page"
+    type: file
+    path: "src/content/pages/services.json"
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: string
+      - name: heroImage
+        label: Hero Image
+        type: image
+      - name: content
+        label: Content
+        type: rich-text
+        options:
+          media: false
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    files:
+      - "home"
+      - "about"
+      - "services"

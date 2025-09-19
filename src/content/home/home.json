@@ -1,7 +1,10 @@
 {
   "title": "Welcome to Vasari Design Interior Design Services",
-  "description": "Vasari Design - Interior Design Services",
   "heroCarousel": [
+    {
+      "image": "/uploads/hero5.jpg",
+      "alt": "Luxurious bedroom with elegant decor"
+    },
     {
       "image": "/uploads/hero4.jpg",
       "alt": "Stylish dining area with a view"
@@ -19,10 +22,6 @@
       "alt": "Bright kitchen with modern appliances"
     },
     {
-      "image": "/uploads/hero5.jpg",
-      "alt": "Luxurious bedroom with elegant decor"
-    },
-    {
       "image": "/uploads/hero6.jpg",
       "alt": "Chic bathroom with contemporary fixtures"
     }
@@ -35,24 +34,19 @@
     "slides": [
       {
         "image": "/uploads/slider1.jpg",
-        "alt": "",
-        "text": "### At Vasari\n\n At Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging."
+        "text": "### At Vasari\n\nAt Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging."
       },
       {
-        "image": "/uploads/slider2.jpg",
-        "alt": ""
+        "image": "/uploads/slider2.jpg"
       },
       {
-        "image": "/uploads/slider3.jpg",
-        "alt": ""
+        "image": "/uploads/slider3.jpg"
       },
       {
-        "image": "/uploads/slider4.jpg",
-        "alt": ""
+        "image": "/uploads/slider4.jpg"
       },
       {
-        "image": "/uploads/slider5.jpg",
-        "alt": ""
+        "image": "/uploads/slider5.jpg"
       }
     ]
   },

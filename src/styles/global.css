@@ -74,10 +74,6 @@ a {
     transition: opacity 0.3s ease;
 }
 
-p + p {
-    margin-top: 1.5rem;
-}
-
 a:hover {
     opacity: 0.8;
     text-decoration: underline;
@@ -89,14 +85,16 @@ a:hover {
     font-weight: 800;
 }
 
-main {
-    background: var(--c-background);
-    position: relative;
-    z-index: 1;
-}
-
 .page-content {
-    padding: 80px 2rem;
+    padding: 80px 0;
     max-width: var(--s-page-width);
     margin: 0 auto;
+}
+
+.page-content > * + * {
+    margin-top: 1.5rem;
+}
+
+.page-content h1 {
+    margin-bottom: 80px;
 }

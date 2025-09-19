@@ -29,8 +29,8 @@ const { title, description, heroImage } = entry.data;
 ---
 <Layout title={title} description={description}>
   {heroImage && <HeroImage src={heroImage} alt={title} />}
-  <main class="page-content">
+  <section class="page-content">
     <h1>{title}</h1>
     <Content />
-  </main>
+  </section>
 </Layout>

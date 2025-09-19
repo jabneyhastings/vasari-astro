@@ -1,9 +1,12 @@
 ---
 import { Image } from 'astro:assets';
+import MarkdownIt from 'markdown-it';
+
 import CmsImage from '../components/CmsImage.astro';
 import rightArrow from '../images/arrow-right.svg';
 import leftArrow from '../images/arrow-left.svg';
 
+const md = new MarkdownIt();
 interface Slide {
   image: string;
   text?: string;
@@ -41,7 +44,7 @@ const { slides } = Astro.props;
             />
           </div>
           {slide.text && (
-            <div class="slider__caption" set:html={slide.text} />
+            <div class="slider__caption" set:html={md.render(slide.text)} />
           )}
         </div>
       ))}

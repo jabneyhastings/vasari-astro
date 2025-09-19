@@ -1,36 +1,36 @@
 ---
-// filepath: src/pages/[page].astro
 import Layout from '../layouts/Layout.astro';
 import HeroImage from '../components/HeroImage.astro';
-import { getEntry, getCollection } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  // List all JSON files in the 'pages' collection except 'home'
   const entries = await getCollection('pages');
-  return entries
-    .filter(entry => entry.id !== 'home') // Exclude home if needed
-    .map(entry => ({
-      params: { page: entry.id },
-    }));
+  // Remove .md extension from entry.id if present
+  return entries.map(entry => {
+    let id = entry.id;
+    if (id.endsWith('.md')) id = id.slice(0, -3);
+    return { params: { page: id } };
+  });
 }
 
 const { page } = Astro.params;
-const entry = await getEntry('pages', page);
+let entry = await getEntry('pages', page);
 
+if (!entry) {
+  // Try with .md fallback for older Astro versions
+  entry = await getEntry('pages', `${page}.md`);
+}
 if (!entry) {
   throw new Error(`Page not found: ${page}`);
 }
 
-const { title, description, heroImage, content } = entry.data;
+const { Content } = await render(entry);
+const { title, description, heroImage } = entry.data;
 ---
-
 <Layout title={title} description={description}>
-    {heroImage && (
-        <HeroImage src={heroImage} alt={title} />
-    )}
-
-    <main class="page-content">
-        <h1>{title}</h1>
-        <div set:html={content} />
-    </main>
+  {heroImage && <HeroImage src={heroImage} alt={title} />}
+  <main class="page-content">
+    <h1>{title}</h1>
+    <Content />
+  </main>
 </Layout>

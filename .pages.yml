@@ -73,10 +73,11 @@ content:
             options:
               media: false
               output: html
+
   - name: "about"
     label: "About Page"
     type: file
-    path: "src/content/pages/about.json"
+    path: "src/content/pages/about.md"
     fields:
       - name: title
         label: Title
@@ -87,17 +88,16 @@ content:
       - name: heroImage
         label: Hero Image
         type: image
-      - name: content
+      - name: body
         label: Content
-        type: rich-text
+        type: markdown
         options:
           media: false
-          output: html
 
   - name: "services"
     label: "Services Page"
     type: file
-    path: "src/content/pages/services.json"
+    path: "src/content/pages/services.md"
     fields:
       - name: title
         label: Title
@@ -108,12 +108,11 @@ content:
       - name: heroImage
         label: Hero Image
         type: image
-      - name: content
+      - name: body
         label: Content
-        type: rich-text
+        type: markdown
         options:
           media: false
-          output: html
 
 collections:
   - name: "pages"

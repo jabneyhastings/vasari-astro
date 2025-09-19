@@ -13,41 +13,54 @@ collections:
         label: "Home Page"
         file: "src/content/pages/home.json"
         fields:
-          - { name: "title", label: "Page Title", widget: "string" }
+          - { name: "title", label: "Title", widget: "string" }
           
           - name: "heroCarousel"
             label: "Hero Carousel"
             widget: "list"
             fields:
-              - { name: "title", label: "Slide Title", widget: "string", required: false }
-              - { name: "description", label: "Slide Description", widget: "text", required: false }
-              - { name: "link", label: "Call-to-Action Link", widget: "string", required: false }
-              - { name: "image", label: "Background Image", widget: "image", required: false, hint: "Leave empty to use gradient background" }
-              - { name: "gradient", label: "CSS Gradient", widget: "string", required: false, hint: "e.g. linear-gradient(45deg, #667eea 0%, #764ba2 100%)" }
+              - { name: "image", label: "Image", widget: "image" }
+              - { name: "alt", label: "Alt Text", widget: "string", required: false }
           
           - name: "aboutSection"
             label: "About Section"
             widget: "object"
             fields:
-              - { name: "title", label: "Section Title", widget: "string" }
-              - name: "content"
-                label: "Content Paragraphs"
-                widget: "list"
-                field: { name: "paragraph", label: "Paragraph", widget: "text" }
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "content", label: "Content", widget: "markdown" }
           
           - name: "secondaryCarousel"
             label: "Secondary Carousel"
             widget: "object"
             fields:
               - name: "slides"
-                label: "Carousel Slides"
+                label: "Slides"
                 widget: "list"
                 fields:
                   - { name: "image", label: "Image", widget: "image" }
-                  - { name: "text", label: "Slide Text", widget: "text", required: false }
+                  - { name: "text", label: "Text", widget: "markdown", required: false }
+                  - { name: "alt", label: "Alt Text", widget: "string", required: false }
           
           - name: "textBlock"
             label: "Text Block"
             widget: "object"
             fields:
-              - { name: "content", label: "Content", widget: "textarea" }
+              - { name: "content", label: "Content", widget: "markdown" }
+      
+      - name: "about"
+        label: "About Page"
+        file: "src/content/pages/about.json"
+        fields:
+          - { name: "title", label: "Title", widget: "string" }
+          - { name: "description", label: "Description", widget: "string" }
+          - { name: "heroImage", label: "Hero Image", widget: "image" }
+          - { name: "content", label: "Content", widget: "markdown" }
+      
+      - name: "services"
+        label: "Services Page"
+        file: "src/content/pages/services.json"
+        fields:
+          - { name: "title", label: "Title", widget: "string" }
+          - { name: "description", label: "Description", widget: "string" }
+          - { name: "heroImage", label: "Hero Image", widget: "image" }
+          - { name: "content", label: "Content", widget: "markdown" }

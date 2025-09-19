@@ -1,12 +1,19 @@
 import { defineCollection, z } from 'astro:content';
 
-const pagesCollection = defineCollection({
-  type: 'data',
+const pages = defineCollection({
+  type: 'content', // For Markdown files (about.md, services.md)
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
     heroImage: z.string().optional(),
-    content: z.string().optional(),
+  }),
+});
+
+const home = defineCollection({
+  type: 'data', // For home.json
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
     heroCarousel: z.array(z.object({
       image: z.string().optional(),
       alt: z.string().optional(),
@@ -29,5 +36,6 @@ const pagesCollection = defineCollection({
 });
 
 export const collections = {
-  'pages': pagesCollection,
+  pages,
+  home,
 };

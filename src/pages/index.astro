@@ -5,7 +5,7 @@ import SecondaryCarousel from '../components/SecondaryCarousel.astro';
 import TextBlock from '../components/TextBlock.astro';
 import { getEntry } from 'astro:content';
 
-const homeData = await getEntry('pages', 'home');
+const homeData = await getEntry('home', 'home');
 
 if (!homeData) {
   throw new Error('Home page data not found');

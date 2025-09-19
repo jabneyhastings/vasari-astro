@@ -1,4 +1,6 @@
 ---
+import MarkdownIt from 'markdown-it';
+const md = new MarkdownIt();
 export interface Props {
   title?: string;
   content: string;
@@ -15,7 +17,7 @@ const { title, content, id, className = '' } = Astro.props;
       <h2 class="text-block__title">{title}</h2>
     </div>
   )}
-  <div class={`text-block__content ${!title ? 'text-block__content--full-width' : ''}`} set:html={content} />
+  <div class={`text-block__content ${!title ? 'text-block__content--full-width' : ''}`} set:html={md.render(content)} />
 </section>
 
 <style>

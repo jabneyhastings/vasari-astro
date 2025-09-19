@@ -90,7 +90,7 @@ content:
         type: image
       - name: body
         label: Content
-        type: markdown
+        type: rich-text
         options:
           media: false
 
@@ -110,7 +110,7 @@ content:
         type: image
       - name: body
         label: Content
-        type: markdown
+        type: rich-text
         options:
           media: false
 

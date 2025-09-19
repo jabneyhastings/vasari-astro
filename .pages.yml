@@ -6,7 +6,7 @@ content:
   - name: "home"
     label: "Home Page"
     type: file
-    path: "src/content/pages/home.json"
+    path: "src/content/home/home.json"
     fields:
       - name: title
         label: Title

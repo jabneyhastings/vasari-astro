@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroImage from '../components/HeroImage.astro';
+import ServiceBlock from '../components/ServiceBlock.astro';
+import { getEntry } from 'astro:content';
+import MarkdownIt from 'markdown-it';
+
+const md = new MarkdownIt();
+const entry = await getEntry('services', 'services');
+if (!entry) {
+    throw new Error("Entry for 'services' not found.");
+}
+const { title, description, heroImage, services, body } = entry.data;
+---
+
+<Layout title={title} description={description}>
+  {heroImage && (
+    <HeroImage src={heroImage} alt={title} />
+  )}
+  <main class="services-page page-content">
+    <section transition:name="page-content">
+      <h1>{title}</h1>
+      <div class="text-content" set:html={md.render(body ?? '')} />
+    </section>
+    {services.map((service, index) => (
+        <ServiceBlock 
+            title={service.title}
+            content={service.content}
+            image={service.image}
+            index={index}
+        />
+    ))}
+  </main>
+</Layout>

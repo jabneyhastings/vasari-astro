@@ -4,6 +4,9 @@ export interface Props {
   description?: string;
 }
 
+import { ClientRouter } from "astro:transitions";
+import { fade } from "astro:transitions";
+
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
@@ -14,7 +17,7 @@ const { title, description } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" transition:name="root" transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,6 +43,8 @@ const { title, description } = Astro.props;
     <link rel="preload" href="/fonts/eb-garamond-regular.woff" as="font" type="font/woff" crossorigin>
 
     <title>Vasari Design - {title}</title>
+
+    <ClientRouter />
   </head>
   <body id="home">
 

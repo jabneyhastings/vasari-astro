@@ -35,7 +35,7 @@ body {
     font-family: var(--ff);
     font-weight: 400;
     font-style: normal;
-    line-height: 1.8;
+    line-height: 1.5;
     letter-spacing: -0.02em;
     background: var(--c-background);
     font-size: var(--fs);
@@ -51,34 +51,35 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-weight: 400;
     line-height: 1.2;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
 }
 
 h1 {
     font-size: 48px;
-    margin-bottom: 1rem;
 }
 
 h2 {
     font-size: var(--fs-large);
-    margin-bottom: 1rem;
 }
 
 h3 {
     font-size: 32px;
-    margin-bottom: 1rem;
 }
 
 a {
     color: var(--c-font);
     text-decoration: none;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgb(from var(--c-font) r g b / .2);
 }
 
 a:hover {
-    opacity: 0.8;
-    text-decoration: underline;
-    text-underline-offset: 5px;
-    text-decoration-thickness: 2px;
+    opacity: 0.4;
+    text-decoration-color: var(--c-font);
 }
 
 .bold {
@@ -86,15 +87,65 @@ a:hover {
 }
 
 .page-content {
-    padding: 80px 0;
+    padding: 80px;
     max-width: var(--s-page-width);
     margin: 0 auto;
+    /* view-transition-name: page-content; */
 }
 
-.page-content > * + * {
+.page-content > * + *,
+.text-content > * + * {
     margin-top: 1.5rem;
 }
 
 .page-content h1 {
     margin-bottom: 80px;
+}
+
+.header__spacer {
+    transform-origin: top;
+}
+
+/* OLD content slides down and fades out */
+::view-transition-old(page-content) {
+  animation: page-slide-down 0.6s ease forwards;
+  z-index: 1;
+  /* animation-delay: 0.2s;  */
+  animation-fill-mode: forwards; /* <- keep it around until finished */
+}
+
+/* NEW content starts hidden below, waits, then rises up */
+::view-transition-new(page-content) {
+  animation: page-slide-up 0.6s ease backwards;
+  /* z-index: 0;  */
+  /* animation-delay: 0.2s;  */
+  animation-fill-mode: backwards; /* <- don’t show early */
+}
+
+@keyframes page-slide-down {
+  from { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes page-slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+::view-transition-old(hero) {
+  animation: slideUp 0.5s forwards;
+}
+
+::view-transition-new(hero) {
+  animation: dropIn 0.5s forwards;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(-100%); opacity: 0; }
+}
+
+@keyframes dropIn {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }

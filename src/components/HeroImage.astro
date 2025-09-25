@@ -4,7 +4,7 @@ import CmsImage from '../components/CmsImage.astro';
 const { src, alt } = Astro.props;
 ---
 
-<section class="hero-image header__spacer">
+<section class="hero-image header__spacer" transition:name="hero">
     <CmsImage 
         src={src}
         alt={alt}

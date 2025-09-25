@@ -97,7 +97,7 @@ content:
   - name: "services"
     label: "Services Page"
     type: file
-    path: "src/content/pages/services.md"
+    path: "src/content/services/services.json"
     fields:
       - name: title
         label: Title
@@ -113,6 +113,22 @@ content:
         type: rich-text
         options:
           media: false
+      - name: services
+        label: Service Blocks
+        type: object
+        list: true
+        fields:
+          - name: title
+            label: Title
+            type: string
+          - name: content
+            label: Content
+            type: text # keep plain text, render with markdown-it in Astro
+          - name: image
+            label: Image
+            type: image
+            required: false
+
 
 collections:
   - name: "pages"

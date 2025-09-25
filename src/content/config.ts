@@ -35,7 +35,23 @@ const home = defineCollection({
   }),
 });
 
+const services = defineCollection({
+  type: 'data', // JSON data
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    heroImage: z.string().optional(),
+    body: z.string().optional(), // markdown text
+    services: z.array(z.object({
+      title: z.string(),
+      content: z.string(), // markdown text
+      image: z.string().optional(),
+    })),
+  }),
+});
+
 export const collections = {
   pages,
   home,
+  services,
 };

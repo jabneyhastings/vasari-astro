@@ -17,7 +17,7 @@ const { title, content, id, className = '' } = Astro.props;
       <h2 class="text-block__title">{title}</h2>
     </div>
   )}
-  <div class={`text-block__content ${!title ? 'text-block__content--full-width' : ''}`} set:html={md.render(content)} />
+  <div class={`text-block__content text-content ${!title ? 'text-block__content--full-width' : ''}`} set:html={md.render(content)} />
 </section>
 
 <style>

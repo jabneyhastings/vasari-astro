@@ -16,7 +16,14 @@ const { heroCarousel, aboutSection, secondaryCarousel, textBlock } = homeData.da
 
 <Layout title={homeData.data.title}>
     <!-- Hero Carousel -->
-    {heroCarousel && <HeroCarousel slides={heroCarousel} />}
+    {heroCarousel && (
+        <HeroCarousel
+            slides={heroCarousel.map(slide => ({
+                image: slide.image ?? '',
+                alt: slide.alt ?? '',
+            }))}
+        />
+    )}
 
     <!-- About Section -->
     {aboutSection && (

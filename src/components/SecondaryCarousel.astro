@@ -1,222 +1,317 @@
 ---
 import { Image } from 'astro:assets';
 import MarkdownIt from 'markdown-it';
-
 import CmsImage from '../components/CmsImage.astro';
 import rightArrow from '../images/arrow-right.svg';
 import leftArrow from '../images/arrow-left.svg';
 
 const md = new MarkdownIt();
+
 interface Slide {
-  image: string;
-  text?: string;
+    image: string;
+    text?: string;
 }
 
 interface Props {
-  slides: Slide[];
+    slides: Slide[];
 }
 
 const { slides } = Astro.props;
 ---
 
 <section class="slider">
-  <header class="slider__header">
-    <div class="slider__controls">
-      <button class="slider__btn is-disabled" id="prevBtn">
-        <Image src={leftArrow} alt="Previous" width="56" height="28" />
-      </button>
-      <button class="slider__btn" id="nextBtn">
-        <Image src={rightArrow} alt="Next" width="56" height="28" />
-      </button>
-    </div>
-  </header>
-
-  <div class="slider__viewport">
-    <div class="slider__track" id="sliderTrack">
-      {slides.map((slide) => (
-        <div class="slider__slide">
-          <div class="slider__media">
-            <CmsImage 
-              src={slide.image}
-              alt="Service Image"
-              height={400}
-              loading="lazy"
-            />
-          </div>
-          {slide.text && (
-            <div class="slider__caption" set:html={md.render(slide.text)} />
-          )}
+    <header class="slider__header">
+        <div class="slider__controls">
+            <button class="slider__btn is-disabled" id="prevBtn">
+                <Image src={leftArrow} alt="Previous" width="56" height="28" />
+            </button>
+            <button class="slider__btn" id="nextBtn">
+                <Image src={rightArrow} alt="Next" width="56" height="28" />
+            </button>
         </div>
-      ))}
+    </header>
+
+    <div class="slider__viewport">
+        <div class="slider__track" id="sliderTrack">
+            {slides.map((slide) => (
+                <div class="slider__slide">
+                    <div class="slider__media">
+                        <CmsImage
+                            src={slide.image}
+                            alt="Service Image"
+                            height={400}
+                            loading="lazy"
+                        />
+                    </div>
+                    {slide.text && (
+                        <div class="slider__caption" set:html={md.render(slide.text)} />
+                    )}
+                </div>
+            ))}
+        </div>
     </div>
-  </div>
 </section>
 
 <style>
-  .slider {
-    padding: 0 2rem;
-    max-width: var(--s-page-width);
-    margin: 0 auto;
-  }
-
-  .slider__header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-
-  .slider__controls {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .slider__btn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.3s ease;
-  }
-
-  .slider__btn:hover:not(.is-disabled) {
-    opacity: 0.6;
-  }
-
-  .slider__btn.is-disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-
-  .slider__viewport {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .slider__track {
-    display: flex;
-    transition: transform 0.5s ease;
-  }
-
-  .slider__slide {
-    flex: 0 0 calc(33.333% - 1.333rem); /* Desktop: 3 slides */
-    display: flex;
-    flex-direction: column;
-    margin-right: 2rem;
-    background: var(--c-c-background);
-    overflow: hidden;
-  }
-
-  .slider__media {
-    flex: 1;
-    height: 400px;
-  }
-
-  :global(.slider__media img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .slider__caption {
-    padding: 1rem 0 0 0;
-    text-align: left;
-  }
-
-  :global(.slider__caption p) {
-    font-size: var(--fs-small);
-    line-height: 1.8;
-    margin: 0;
-  }
-
-  /* Tablet: 2 slides */
-  @media (max-width: 1024px) {
-    .slider__slide {
-      flex: 0 0 calc(50% - 1rem);
-      margin-right: 2rem;
+    .slider {
+        padding: 0 2rem;
+        max-width: var(--s-page-width);
+        margin: 0 auto;
     }
-  }
 
-  /* Mobile: 1 slide */
-  @media (max-width: 768px) {
     .slider__header {
-      justify-content: center;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 2rem;
     }
+
+    .slider__controls {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .slider__btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease;
+    }
+
+    .slider__btn:hover:not(.is-disabled) {
+        opacity: 0.6;
+    }
+
+    .slider__btn.is-disabled {
+        opacity: 0.3;
+        cursor: default;
+    }
+
+    .slider__viewport {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .slider__track {
+        display: flex;
+        gap: 2rem;
+        transition: transform 0.5s ease;
+    }
+
     .slider__slide {
-      flex: 0 0 calc(100% - 1rem);
-      margin-right: 1rem;
+        flex: 0 0 calc((100% / 3) - (2rem * 2 / 3));
+        display: flex;
+        flex-direction: column;
+        background: var(--c-c-background);
+        overflow: hidden;
     }
-  }
+
+    .slider__media {
+        flex: 1;
+        height: 400px;
+    }
+
+    :global(.slider__media img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .slider__caption {
+        padding: 1rem 0 0 0;
+        text-align: left;
+    }
+
+    :global(.slider__caption p) {
+        font-size: var(--fs-small);
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .slider__track {
+            gap: 1.5rem;
+        }
+        .slider__slide {
+            flex: 0 0 calc((100% / 2) - (1.5rem / 2));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .slider__header {
+            justify-content: center;
+        }
+        .slider__track {
+            gap: 1rem;
+        }
+        .slider__slide {
+            flex: 0 0 100%;
+        }
+    }
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  const track = document.getElementById("sliderTrack");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
-
-  if (!track || !prevBtn || !nextBtn) return;
-
-  let currentIndex = 0;
-  const slides = track.querySelectorAll(".slider__slide");
-
-  const getVisibleCount = () => {
-    const slideWidth = slides[0].clientWidth;
-    const viewportWidth = track.parentElement!.clientWidth;
-    return Math.floor(viewportWidth / slideWidth) || 1;
-  };
-
-  const updatePosition = () => {
-    const slideWidth = slides[0].clientWidth + parseInt(getComputedStyle(slides[0]).marginRight);
-    const offset = currentIndex * slideWidth;
-    track.style.transform = `translateX(-${offset}px)`;
-
-    // Update button states
-    prevBtn.classList.toggle("is-disabled", currentIndex === 0);
-    nextBtn.classList.toggle(
-      "is-disabled",
-      currentIndex >= slides.length - getVisibleCount()
-    );
-  };
-
-  const goNext = () => {
-    if (currentIndex < slides.length - getVisibleCount()) {
-      currentIndex++;
-      updatePosition();
+    interface SliderElements {
+        track: HTMLElement;
+        prevBtn: HTMLButtonElement;
+        nextBtn: HTMLButtonElement;
+        slides: NodeListOf<HTMLElement>;
     }
-  };
 
-  const goPrev = () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      updatePosition();
+    class Slider {
+        private root: HTMLElement;
+        private track: HTMLElement;
+        private prevBtn: HTMLButtonElement;
+        private nextBtn: HTMLButtonElement;
+        private slides: NodeListOf<HTMLElement>;
+        private currentIndex: number = 0;
+        private lastWidth: number = window.innerWidth;
+        private resizeTimeout: number | null = null;
+
+        constructor(root: HTMLElement) {
+            this.root = root;
+            
+            const elements = this.getElements();
+            if (!elements) {
+                console.error('Slider: Required elements not found');
+                return;
+            }
+
+            this.track = elements.track;
+            this.prevBtn = elements.prevBtn;
+            this.nextBtn = elements.nextBtn;
+            this.slides = elements.slides;
+
+            this.bindEvents();
+            this.updatePosition();
+        }
+
+        private getElements(): SliderElements | null {
+            const track = this.root.querySelector<HTMLElement>('#sliderTrack');
+            const prevBtn = this.root.querySelector<HTMLButtonElement>('#prevBtn');
+            const nextBtn = this.root.querySelector<HTMLButtonElement>('#nextBtn');
+            const slides = this.root.querySelectorAll<HTMLElement>('.slider__slide');
+
+            if (!track || !prevBtn || !nextBtn || slides.length === 0) {
+                return null;
+            }
+
+            return { track, prevBtn, nextBtn, slides };
+        }
+
+        private bindEvents(): void {
+            this.prevBtn.addEventListener('click', () => this.goPrev());
+            this.nextBtn.addEventListener('click', () => this.goNext());
+            window.addEventListener('resize', () => this.handleResize());
+        }
+
+        private getGapSize(): number {
+            const trackStyles = window.getComputedStyle(this.track);
+            const gap = trackStyles.gap || '0px';
+            return parseInt(gap, 10) || 0;
+        }
+
+        private getVisibleCount(): number {
+            if (this.slides.length === 0) return 1;
+            
+            const slideWidth = this.slides[0].clientWidth;
+            const gapSize = this.getGapSize();
+            const viewportWidth = this.track.parentElement?.clientWidth || 0;
+            
+            // Calculate how many slides fit including gaps
+            const slideWithGap = slideWidth + gapSize;
+            const visibleCount = Math.floor((viewportWidth + gapSize) / slideWithGap);
+            
+            return Math.max(1, Math.min(visibleCount, this.slides.length));
+        }
+
+        private updatePosition(): void {
+            if (this.slides.length === 0) return;
+
+            const slideWidth = this.slides[0].clientWidth;
+            const gapSize = this.getGapSize();
+            const offset = this.currentIndex * (slideWidth + gapSize);
+            
+            this.track.style.transform = `translateX(-${offset}px)`;
+
+            // Update button states
+            this.prevBtn.classList.toggle('is-disabled', this.currentIndex === 0);
+            
+            const maxIndex = Math.max(0, this.slides.length - this.getVisibleCount());
+            this.nextBtn.classList.toggle('is-disabled', this.currentIndex >= maxIndex);
+        }
+
+        private goNext(): void {
+            const maxIndex = Math.max(0, this.slides.length - this.getVisibleCount());
+            if (this.currentIndex < maxIndex) {
+                this.currentIndex++;
+                this.updatePosition();
+            }
+        }
+
+        private goPrev(): void {
+            if (this.currentIndex > 0) {
+                this.currentIndex--;
+                this.updatePosition();
+            }
+        }
+
+        private handleResize(): void {
+            if (this.resizeTimeout) {
+                clearTimeout(this.resizeTimeout);
+            }
+
+            this.resizeTimeout = window.setTimeout(() => {
+                const currentWidth = window.innerWidth;
+                
+                if (Math.abs(currentWidth - this.lastWidth) > 50) {
+                    const oldVisible = this.getVisibleCount();
+                    const group = Math.floor(this.currentIndex / oldVisible);
+                    
+                    // Recalculate after resize
+                    const newVisible = this.getVisibleCount();
+                    const maxIndex = Math.max(0, this.slides.length - newVisible);
+                    
+                    this.currentIndex = Math.min(group * newVisible, maxIndex);
+                    this.lastWidth = currentWidth;
+                }
+                
+                this.updatePosition();
+            }, 150);
+        }
+
+        public destroy(): void {
+            if (this.resizeTimeout) {
+                clearTimeout(this.resizeTimeout);
+                this.resizeTimeout = null;
+            }
+
+            this.prevBtn.removeEventListener('click', () => this.goPrev());
+            this.nextBtn.removeEventListener('click', () => this.goNext());
+            window.removeEventListener('resize', () => this.handleResize());
+        }
     }
-  };
 
-  nextBtn.addEventListener("click", goNext);
-  prevBtn.addEventListener("click", goPrev);
+    let sliderInstance: Slider | null = null;
 
-  // Only reset on significant resize (not just mobile scrolling)
-  let resizeTimeout: ReturnType<typeof setTimeout>;
-  let lastWidth = window.innerWidth;
-  
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const currentWidth = window.innerWidth;
-      // Only reset if width actually changed significantly (orientation change, etc.)
-      if (Math.abs(currentWidth - lastWidth) > 50) {
-        currentIndex = 0;
-        lastWidth = currentWidth;
-      }
-      updatePosition();
-    }, 150);
-  });
+    const initializeSlider = (): void => {
+        const root = document.querySelector<HTMLElement>('.slider');
+        if (root) {
+            sliderInstance = new Slider(root);
+        }
+    };
 
-  // Init
-  updatePosition();
-});
+    const destroySlider = (): void => {
+        if (sliderInstance) {
+            sliderInstance.destroy();
+            sliderInstance = null;
+        }
+    };
+
+    document.addEventListener('astro:page-load', initializeSlider);
+    document.addEventListener('astro:before-swap', destroySlider);
 </script>

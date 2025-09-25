@@ -4,116 +4,138 @@ import logoLight from "../images/logo-light.png";
 import logoDark from "../images/logo-dark.png";
 ---
 
-<header id="site-header" class="header">
-  <a href="#services" class="text-link">Services</a>
+<header id="site-header" class="header" transition:name="site-header">
+    <a href="/services" class="text-link">Services</a>
 
-  <a href="#home" class="logo">
-    <Image 
-      id="site-logo-light"
-      src={logoLight}
-      alt="Vasari Design Light" 
-      width="105" 
-      height="93" 
-      loading="eager" 
-      fetchpriority="high" 
-      class="logo-img"
-    />
-    <Image 
-      id="site-logo-dark"
-      src={logoDark}
-      alt="Vasari Design Dark" 
-      width="105" 
-      height="93" 
-      loading="eager" 
-      fetchpriority="high" 
-      class="logo-img hidden"
-    />
-  </a>
+    <a href="/" class="logo">
+        <Image 
+            id="site-logo-light"
+            src={logoLight}
+            alt="Vasari Design Light" 
+            width="105" 
+            height="93" 
+            loading="eager" 
+            fetchpriority="high" 
+            class="logo-img"
+        />
+        <Image 
+            id="site-logo-dark"
+            src={logoDark}
+            alt="Vasari Design Dark" 
+            width="105" 
+            height="93" 
+            loading="eager" 
+            fetchpriority="high" 
+            class="logo-img hidden"
+        />
+    </a>
 
-  <a href="#about" class="text-link">About</a>
+    <a href="/about" class="text-link">About</a>
 </header>
 
 <script>
-  function updateHeader() {
-    const header = document.getElementById("site-header");
-    const hero = document.querySelector(".header__spacer");
-    const logoLightEl = document.getElementById("site-logo-light");
-    const logoDarkEl = document.getElementById("site-logo-dark");
+    function updateHeader() {
+        const header = document.getElementById("site-header");
+        const hero = document.querySelector(".header__spacer") as HTMLElement;
+        const logoLightEl = document.getElementById("site-logo-light");
+        const logoDarkEl = document.getElementById("site-logo-dark");
 
-    if (!header || !hero || !logoLightEl || !logoDarkEl) return;
+        if (!header || !hero || !logoLightEl || !logoDarkEl) return;
 
-    const heroBottom = hero.offsetHeight;
+        const heroBottom = hero.offsetHeight;
 
-    if (window.scrollY > (heroBottom - 60)) {
-      header.classList.add("scrolled");
-      logoLightEl.classList.add("hidden");
-      logoDarkEl.classList.remove("hidden");
-    } else {
-      header.classList.remove("scrolled");
-      logoLightEl.classList.remove("hidden");
-      logoDarkEl.classList.add("hidden");
+        if (window.scrollY > (heroBottom - 60)) {
+            header.classList.add("scrolled");
+            logoLightEl.classList.add("hidden");
+            logoDarkEl.classList.remove("hidden");
+        } else {
+            header.classList.remove("scrolled");
+            logoLightEl.classList.remove("hidden");
+            logoDarkEl.classList.add("hidden");
+        }
     }
-  }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", updateHeader);
-  } else {
-    updateHeader();
-  }
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", updateHeader);
+    } else {
+        updateHeader();
+    }
 
-  window.addEventListener("scroll", updateHeader);
+    window.addEventListener("scroll", updateHeader);
 </script>
 
 <style>
-  .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    pointer-events: none;
-    font-size: 24px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .header a {
-    color: white;
-    text-decoration: none;
-    transition: opacity 0.3s ease, color 0.3s ease;
-    pointer-events: auto;
-    line-height: 1;
-  }
-
-  .header a:hover {
-    opacity: 0.8;
-  }
-
-  /* When scrolled */
-  .header.scrolled {
-    background-color: var(--c-background);
-    color: var(--c-font);
-  }
-
-  .header.scrolled a {
-    color: var(--c-font);
-  }
-
-  .logo-img {
-    display: block;
-    transition: opacity 0.3s ease;
-  }
-  .hidden {
-    display: none;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
     .header {
-      padding: 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        pointer-events: none;
+        font-size: 24px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        view-transition-name: site-header;
     }
-  }
+
+    .header a {
+        color: white;
+        text-decoration: none;
+        transition: opacity 0.3s ease, color 0.3s ease;
+        pointer-events: auto;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    .header a:hover {
+        opacity: 0.8;
+    }
+
+    /* When scrolled */
+    .header.scrolled {
+        background-color: var(--c-background);
+        color: var(--c-font);
+    }
+
+    .header.scrolled a {
+        color: var(--c-font);
+    }
+
+    .logo-img {
+        display: block;
+        transition: opacity 0.3s ease;
+    }
+    .hidden {
+        display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .header {
+        padding: 1rem;
+        }
+    }
+
+    ::view-transition-old(site-header) {
+        animation: header-slide-up 0.6s ease forwards;
+    }
+
+    /* New header: slides down after hero finishes */
+    ::view-transition-new(site-header) {
+        animation: header-slide-down 0.6s ease forwards;
+        animation-delay: 0.2s; /* slight delay for stagger effect */
+    }
+
+    @keyframes header-slide-up {
+        from { transform: translateY(0); opacity: 1; }
+        to   { transform: translateY(-100%); opacity: 0; }
+    }
+
+    @keyframes header-slide-down {
+        from { transform: translateY(-100%); opacity: 0; }
+        to   { transform: translateY(0); opacity: 1; }
+    }
 </style>

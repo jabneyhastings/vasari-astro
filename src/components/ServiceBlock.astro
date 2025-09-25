@@ -1,0 +1,247 @@
+---
+import MarkdownIt from 'markdown-it';
+const md = new MarkdownIt();
+const { title, content, image, index } = Astro.props;
+const isEven = index % 2 === 0;
+---
+
+<section 
+    class={`service-block service-block--${isEven ? 'even' : 'odd'} ${!image ? 'service-block--no-image' : ''}`} 
+    data-animate
+    data-astro-cid-service-block
+>
+    {image && (
+        <div class="service-block__image" data-animate-item>
+            <img src={image} alt={title} loading="lazy" />
+        </div>
+    )}
+    <div class="service-block__text" data-animate-item>
+        <h2 class="service-block__title">{title}</h2>
+        <div class="service-block__content text-content" set:html={md.render(typeof content === 'string' ? content : '')} />
+    </div>
+</section>
+
+<style>
+.service-block {
+    --tx: 80px;
+    --ty: 40px;
+    --scale-start: 0.98;
+    --duration: 0.6s;
+    --easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    margin: 8rem 0;
+}
+
+.service-block--even {
+    flex-direction: row;
+}
+
+.service-block--odd {
+    flex-direction: row-reverse;
+}
+
+.service-block--no-image {
+    justify-content: center;
+    text-align: center;
+}
+
+.service-block__image {
+    flex: 0 0 auto;
+}
+
+.service-block__image img {
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.service-block__text {
+    flex: 1;
+    max-width: 600px;
+}
+
+/* Base hidden state + fallback transitions */
+[data-animate-item] {
+    opacity: 0;
+    transform: translateY(var(--ty)) scale(var(--scale-start));
+    transition: opacity var(--duration) var(--easing), transform var(--duration) var(--easing);
+    will-change: opacity, transform;
+}
+
+/* Fallback initial transforms (left/right based on container) */
+.service-block--even .service-block__image[data-animate-item],
+.service-block--odd .service-block__text[data-animate-item] {
+    transform: translateX(calc(-1 * var(--tx))) scale(var(--scale-start));
+}
+
+.service-block--even .service-block__text[data-animate-item],
+.service-block--odd .service-block__image[data-animate-item] {
+    transform: translateX(var(--tx)) scale(var(--scale-start));
+}
+
+/* No-image (centered) fallback */
+.service-block--no-image .service-block__text[data-animate-item] {
+    transform: translateY(calc(var(--ty) + 10px)) scale(var(--scale-start));
+}
+
+/* Visible state (fallback) */
+.service-block.is-visible [data-animate-item] {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+}
+
+/* Stagger for fallback */
+.service-block.is-visible .service-block__image[data-animate-item] {
+    transition-delay: 0.08s;
+}
+
+.service-block.is-visible .service-block__text[data-animate-item] {
+    transition-delay: 0.18s;
+}
+
+/* Responsive mobile adjustments (fallback) */
+@media (max-width: 1024px) {
+    .service-block {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .service-block__image img {
+        max-width: 100%;
+    }
+
+    /* Mobile: fade-up instead of left/right */
+    [data-animate-item] {
+        transform: translateY(24px) scale(var(--scale-start));
+        transition: opacity calc(var(--duration) - 0.1s) var(--easing), transform calc(var(--duration) - 0.1s) var(--easing);
+    }
+
+    .service-block.is-visible [data-animate-item] {
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Progressive enhancement: scroll-driven animations (left/right preserved) */
+@supports (animation-timeline: view()) {
+    .service-block--even .service-block__image[data-animate-item],
+    .service-block--odd .service-block__text[data-animate-item] {
+        animation: sdFadeFromLeft var(--duration) var(--easing) both;
+        animation-timeline: view();
+        animation-range: entry -20% cover 45%;
+    }
+
+    .service-block--even .service-block__text[data-animate-item],
+    .service-block--odd .service-block__image[data-animate-item] {
+        animation: sdFadeFromRight var(--duration) var(--easing) both;
+        animation-timeline: view();
+        animation-range: entry -20% cover 45%;
+    }
+
+    .service-block--no-image .service-block__text[data-animate-item] {
+        animation: sdFadeUp var(--duration) var(--easing) both;
+        animation-timeline: view();
+        animation-range: entry -25% cover 40%;
+    }
+
+    @media (max-width: 1024px) {
+        .service-block--even .service-block__image[data-animate-item],
+        .service-block--even .service-block__text[data-animate-item],
+        .service-block--odd .service-block__image[data-animate-item],
+        .service-block--odd .service-block__text[data-animate-item] {
+            animation: sdFadeUp calc(var(--duration) - 0.1s) var(--easing) both;
+            animation-timeline: view();
+            animation-range: entry -15% cover 20%;
+        }
+    }
+
+    /* Keyframes */
+    @keyframes sdFadeFromLeft {
+        from {
+            opacity: 0;
+            transform: translateX(calc(-1 * var(--tx))) scale(var(--scale-start));
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    @keyframes sdFadeFromRight {
+        from {
+            opacity: 0;
+            transform: translateX(var(--tx)) scale(var(--scale-start));
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    @keyframes sdFadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(var(--ty)) scale(var(--scale-start));
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Make sure scroll-driven animation doesn't conflict with .is-visible fallback */
+    .service-block.is-visible [data-animate-item] {
+        /* no-op: leave animation to CSS scroll timeline */
+    }
+}
+</style>
+
+<script>
+(function () {
+    if (CSS && CSS.supports && CSS.supports("animation-timeline: view()")) {
+        return;
+    }
+
+    let observer;
+
+    function initAnimations() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            return;
+        }
+
+        if (observer) observer.disconnect();
+
+        observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // animate once
+                }
+            });
+        }, {
+            rootMargin: '0px 0px -20% 0px', // start when element is ~20% before fully entering
+            threshold: 0,                   // trigger as soon as it peeks in
+        });
+
+        document.querySelectorAll('[data-animate]').forEach((el) => {
+            el.classList.remove('is-visible');
+            observer.observe(el);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAnimations);
+    } else {
+        initAnimations();
+    }
+
+    document.addEventListener('astro:page-load', initAnimations);
+    document.addEventListener('astro:after-swap', () => {
+        setTimeout(initAnimations, 50);
+    });
+})();
+</script>

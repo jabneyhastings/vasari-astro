@@ -14,7 +14,7 @@ interface Props {
 const { slides, autoAdvanceDelay = 5000 } = Astro.props;
 ---
 
-<section class="carousel header__spacer" aria-label="Hero carousel">
+<section class="carousel header__spacer" aria-label="Hero carousel" transition:name="hero">
   <div class="carousel__slides">
     {slides.map((slide, index) => (
       <div 
@@ -54,126 +54,213 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
 </section>
 
 <script define:vars={{ autoAdvanceDelay }}>
-  class HeroCarousel {
-    constructor() {
-      this.currentSlide = 0;
-      this.slides = document.querySelectorAll('.carousel__slide');
-      this.dots = document.querySelectorAll('.carousel__dot');
-      this.autoAdvanceTimer = null;
-      
-      if (this.slides.length <= 1) return;
+(function () {
+    // Map<HTMLElement, HeroCarousel>
+    const instances = new Map();
 
-      this.init();
-    }
+    class HeroCarousel {
+        constructor(root) {
+            this.root = root;
+            this.slides = Array.from(root.querySelectorAll('.carousel__slide'));
+            this.dots = Array.from(root.querySelectorAll('.carousel__dot'));
+            this.currentSlide = 0;
+            this.autoAdvanceTimer = null;
 
-    init() {
-      this.bindEvents();
-      this.startAutoAdvance();
+            // bound handlers so we can remove them later
+            this.onRootClick = this.onRootClick.bind(this);
+            this.onRootKeydown = this.onRootKeydown.bind(this);
+            this.onTouchStart = this.onTouchStart.bind(this);
+            this.onTouchEnd = this.onTouchEnd.bind(this);
+            this.onFocusIn = this.onFocusIn.bind(this);
+            this.onFocusOut = this.onFocusOut.bind(this);
 
-      // Accessibility: pause while focused
-      const carousel = document.querySelector('.carousel');
-      carousel?.addEventListener('focusin', () => this.pauseAutoAdvance());
-      carousel?.addEventListener('focusout', () => this.resumeAutoAdvance());
-    }
+            this.startX = 0;
+            this.startY = 0;
 
-    bindEvents() {
-      this.dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => this.goToSlide(index));
+            if (this.slides.length <= 1) return;
 
-        dot.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowLeft' && index > 0) {
-            this.goToSlide(index - 1);
-            this.dots[index - 1].focus();
-          } else if (e.key === 'ArrowRight' && index < this.dots.length - 1) {
-            this.goToSlide(index + 1);
-            this.dots[index + 1].focus();
-          }
-        });
-      });
-
-      // Touch/swipe support
-      let startX = 0;
-      let startY = 0;
-
-      this.carousel?.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      }, { passive: true });
-
-      this.carousel?.addEventListener('touchend', (e) => {
-        const endX = e.changedTouches[0].clientX;
-        const endY = e.changedTouches[0].clientY;
-        const diffX = startX - endX;
-        const diffY = startY - endY;
-
-        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-          diffX > 0 ? this.nextSlide() : this.prevSlide();
+            this.init();
         }
-      }, { passive: true });
+
+        init() {
+            instances.set(this.root, this);
+
+            // Event delegation: single handlers attached to the root
+            this.root.addEventListener('click', this.onRootClick);
+            this.root.addEventListener('keydown', this.onRootKeydown);
+            this.root.addEventListener('touchstart', this.onTouchStart, { passive: true });
+            this.root.addEventListener('touchend', this.onTouchEnd, { passive: true });
+            this.root.addEventListener('focusin', this.onFocusIn);
+            this.root.addEventListener('focusout', this.onFocusOut);
+
+            // ensure proper starting ARIA state
+            this.slides.forEach((s, i) => {
+                s.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+            });
+            this.dots.forEach((d, i) => {
+                d.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+            });
+
+            this.startAutoAdvance();
+        }
+
+        onRootClick(e) {
+            // dot click
+            const dot = e.target.closest('.carousel__dot');
+            if (dot && this.root.contains(dot)) {
+                const index = Number(dot.getAttribute('data-slide'));
+                if (!Number.isNaN(index)) this.goToSlide(index);
+                return;
+            }
+
+            // let normal link clicks inside slides behave naturally;
+            // if links inside slides are not working, the problem is likely z-index/pointer-events.
+        }
+
+        onRootKeydown(e) {
+            const dot = e.target.closest('.carousel__dot');
+            if (!dot) return;
+            const index = Number(dot.getAttribute('data-slide'));
+            if (e.key === 'ArrowLeft' && index > 0) {
+                this.goToSlide(index - 1);
+                this.dots[index - 1].focus();
+            } else if (e.key === 'ArrowRight' && index < this.dots.length - 1) {
+                this.goToSlide(index + 1);
+                this.dots[index + 1].focus();
+            }
+        }
+
+        onTouchStart(e) {
+            this.startX = e.touches[0].clientX;
+            this.startY = e.touches[0].clientY;
+        }
+
+        onTouchEnd(e) {
+            const endX = e.changedTouches[0].clientX;
+            const endY = e.changedTouches[0].clientY;
+            const diffX = this.startX - endX;
+            const diffY = this.startY - endY;
+
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                diffX > 0 ? this.nextSlide() : this.prevSlide();
+            }
+        }
+
+        onFocusIn() {
+            this.pauseAutoAdvance();
+        }
+
+        onFocusOut() {
+            this.resumeAutoAdvance();
+        }
+
+        goToSlide(index) {
+            if (index === this.currentSlide) return;
+
+            const prevSlide = this.slides[this.currentSlide];
+            const prevDot = this.dots[this.currentSlide];
+
+            prevSlide?.classList.remove('carousel__slide--active');
+            prevSlide?.setAttribute('aria-hidden', 'true');
+            prevDot?.classList.remove('carousel__dot--active');
+            prevDot?.setAttribute('aria-selected', 'false');
+
+            this.currentSlide = index;
+
+            const curSlide = this.slides[this.currentSlide];
+            const curDot = this.dots[this.currentSlide];
+
+            curSlide?.classList.add('carousel__slide--active');
+            curSlide?.setAttribute('aria-hidden', 'false');
+            curDot?.classList.add('carousel__dot--active');
+            curDot?.setAttribute('aria-selected', 'true');
+
+            this.resetAutoAdvance();
+        }
+
+        nextSlide() {
+            const nextIndex = (this.currentSlide + 1) % this.slides.length;
+            this.goToSlide(nextIndex);
+        }
+
+        prevSlide() {
+            const prevIndex = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
+            this.goToSlide(prevIndex);
+        }
+
+        startAutoAdvance() {
+            this.clearTimers();
+            this.autoAdvanceTimer = setTimeout(() => {
+                this.nextSlide();
+                this.startAutoAdvance();
+            }, autoAdvanceDelay);
+        }
+
+        pauseAutoAdvance() {
+            this.clearTimers();
+        }
+
+        resumeAutoAdvance() {
+            this.startAutoAdvance();
+        }
+
+        resetAutoAdvance() {
+            this.startAutoAdvance();
+        }
+
+        clearTimers() {
+            clearTimeout(this.autoAdvanceTimer);
+            this.autoAdvanceTimer = null;
+        }
+
+        destroy() {
+            this.clearTimers();
+            this.root.removeEventListener('click', this.onRootClick);
+            this.root.removeEventListener('keydown', this.onRootKeydown);
+            this.root.removeEventListener('touchstart', this.onTouchStart, { passive: true });
+            this.root.removeEventListener('touchend', this.onTouchEnd, { passive: true });
+            this.root.removeEventListener('focusin', this.onFocusIn);
+            this.root.removeEventListener('focusout', this.onFocusOut);
+
+            instances.delete(this.root);
+        }
     }
 
-    goToSlide(index) {
-      if (index === this.currentSlide) return;
-
-      // Remove active states
-      this.slides[this.currentSlide]?.classList.remove('carousel__slide--active');
-      this.dots[this.currentSlide]?.classList.remove('carousel__dot--active');
-      this.dots[this.currentSlide]?.setAttribute('aria-selected', 'false');
-      this.slides[this.currentSlide]?.setAttribute('aria-hidden', 'true');
-
-      this.currentSlide = index;
-
-      // Add active states
-      this.slides[this.currentSlide]?.classList.add('carousel__slide--active');
-      this.dots[this.currentSlide]?.classList.add('carousel__dot--active');
-      this.dots[this.currentSlide]?.setAttribute('aria-selected', 'true');
-      this.slides[this.currentSlide]?.setAttribute('aria-hidden', 'false');
-
-      this.resetAutoAdvance();
+    // Initialize any carousels in the document that don't already have instances
+    function initCarousel() {
+        document.querySelectorAll('.carousel').forEach((el) => {
+            if (!instances.has(el)) {
+                new HeroCarousel(el);
+            }
+        });
     }
 
-    nextSlide() {
-      const nextIndex = (this.currentSlide + 1) % this.slides.length;
-      this.goToSlide(nextIndex);
+    // Destroy all active instances (called before a view transition swap)
+    function destroyAllInstances() {
+        // iterate over a copy of the values to avoid mutation while iterating
+        Array.from(instances.values()).forEach((inst) => {
+            inst.destroy();
+        });
     }
 
-    prevSlide() {
-      const prevIndex = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
-      this.goToSlide(prevIndex);
+    // initial load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCarousel);
+    } else {
+        initCarousel();
     }
 
-    startAutoAdvance() {
-      this.clearTimers();
-      this.autoAdvanceTimer = setTimeout(() => {
-        this.nextSlide();
-        this.startAutoAdvance(); // reschedule
-      }, autoAdvanceDelay);
-    }
+    // Clean up before Astro swaps the DOM
+    document.addEventListener('astro:before-swap', () => {
+        destroyAllInstances();
+    });
 
-    pauseAutoAdvance() {
-      this.clearTimers();
-    }
-
-    resumeAutoAdvance() {
-      this.startAutoAdvance();
-    }
-
-    resetAutoAdvance() {
-      this.startAutoAdvance();
-    }
-
-    clearTimers() {
-      clearTimeout(this.autoAdvanceTimer);
-      this.autoAdvanceTimer = null;
-    }
-  }
-
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => new HeroCarousel());
-  } else {
-    new HeroCarousel();
-  }
+    // Re-init after Astro has swapped the DOM
+    document.addEventListener('astro:after-swap', () => {
+        // small delay so DOM is stable; adjust if you need it immediate
+        setTimeout(initCarousel, 30);
+    });
+})();
 </script>
 
 <style>

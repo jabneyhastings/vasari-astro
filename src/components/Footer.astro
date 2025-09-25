@@ -9,16 +9,11 @@ const socialLinks = [
 ---
 
 <footer class="footer">
+    <h3 class="footer-title">Vasari Design</h3>
+
     <div class="footer-content">
-        <div class="footer-section">
-            <h3>Vasari Design</h3>
-            <p>
-            At Vasari, we believe a home should offer more than visual beauty alone — it should
-            offer depth, clarity, and a sense of belonging.
-            </p>
-        </div>
-        <div class="footer-section">
-            <h3>Contact</h3>
+        <div class="footer-section footer-contact">
+            <h4>Contact</h4>
             <table>
                 <tr>
                     <td class="bold">London:</td>
@@ -34,14 +29,11 @@ const socialLinks = [
                         <a href="mailto:roman@vasaridesign.com">roman@vasaridesign.com</a>
                     </td>
                 </tr>
-                <tr>
-                    <td class="bold">Support:</td>
-                    <td><a href="mailto:info@vasaridesign.com">info@vasaridesign.com</a></td>
-                </tr>
             </table>
         </div>
-        <div class="footer-section">
-            <h3>Follow</h3>
+
+        <div class="footer-section footer-follow">
+            <h4>Follow</h4>
             <SocialLinks links={socialLinks} />
         </div>
     </div>
@@ -58,14 +50,23 @@ const socialLinks = [
         font-size: var(--fs-small);
     }
 
+    .footer-title {
+        margin: 0 0 1rem 0;
+    }
+
     .footer-content {
         padding-bottom: 80px;
         max-width: var(--s-page-width);
         margin: 0 auto;
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr;
         gap: 3rem;
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-areas: ". contact follow";
+        align-items: start;
     }
+
+    .footer-contact { grid-area: contact; }
+    .footer-follow  { grid-area: follow; }
 
     .footer-section p,
     .footer__copyright p {
@@ -83,10 +84,22 @@ const socialLinks = [
         vertical-align: top;
     }
 
+    @media (max-width: 1024px) {
+        .footer-content {
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas: "contact follow";
+            gap: 2.5rem;
+        }
+    }
+
     @media (max-width: 768px) {
         .footer-content {
             grid-template-columns: 1fr;
+            grid-template-areas:
+                "contact"
+                "follow";
             gap: 2rem;
+            padding-bottom: 40px;
         }
     }
 </style>

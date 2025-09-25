@@ -87,10 +87,9 @@ a:hover {
 }
 
 .page-content {
-    padding: 80px;
+    padding: 80px 40px;
     max-width: var(--s-page-width);
     margin: 0 auto;
-    /* view-transition-name: page-content; */
 }
 
 .page-content > * + *,
@@ -104,6 +103,12 @@ a:hover {
 
 .header__spacer {
     transform-origin: top;
+}
+
+@media (max-width: 768px) {
+    .page-content {
+        padding: 40px 20px;
+    }
 }
 
 /* OLD content slides down and fades out */

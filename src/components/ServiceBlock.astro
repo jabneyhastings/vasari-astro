@@ -1,4 +1,5 @@
 ---
+import CmsImage from '../components/CmsImage.astro';
 import MarkdownIt from 'markdown-it';
 const md = new MarkdownIt();
 const { title, content, image, index } = Astro.props;
@@ -12,7 +13,12 @@ const isEven = index % 2 === 0;
 >
     {image && (
         <div class="service-block__image" data-animate-item>
-            <img src={image} alt={title} loading="lazy" />
+            <CmsImage
+                src={image}
+                alt={title}
+                height={500}
+                loading="lazy"
+            />
         </div>
     )}
     <div class="service-block__text" data-animate-item>
@@ -52,7 +58,7 @@ const isEven = index % 2 === 0;
     flex: 0 0 auto;
 }
 
-.service-block__image img {
+  :global(.service-block__image img) {
     max-width: 500px;
     width: 100%;
     height: auto;

@@ -113,7 +113,7 @@ a:hover {
 
 /* OLD content slides down and fades out */
 ::view-transition-old(page-content) {
-  animation: page-slide-down 0.6s ease forwards;
+  animation: page-slide-down 0.8s ease forwards;
   z-index: 1;
   /* animation-delay: 0.2s;  */
   animation-fill-mode: forwards; /* <- keep it around until finished */
@@ -121,7 +121,7 @@ a:hover {
 
 /* NEW content starts hidden below, waits, then rises up */
 ::view-transition-new(page-content) {
-  animation: page-slide-up 0.6s ease backwards;
+  animation: page-slide-up 0.8s ease backwards;
   /* z-index: 0;  */
   /* animation-delay: 0.2s;  */
   animation-fill-mode: backwards; /* <- don’t show early */
@@ -138,11 +138,11 @@ a:hover {
 }
 
 ::view-transition-old(hero) {
-  animation: slideUp 0.5s forwards;
+  animation: slideUp 0.7s forwards;
 }
 
 ::view-transition-new(hero) {
-  animation: dropIn 0.5s forwards;
+  animation: dropIn 0.7s forwards;
 }
 
 @keyframes slideUp {

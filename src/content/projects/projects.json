@@ -5,23 +5,37 @@
   "body": "Each Vasari project represents a collaboration built on trust, craftsmanship, and design integrity. From the first sketch to the final finish, we pursue a singular vision: creating spaces that are deeply connected to their place and purpose. Our work ranges from bespoke homes and heritage restorations to contemporary developments — all unified by the same care, restraint and precision.\n\nBelow are a selection of recent and signature projects that reflect the Vasari approach.",
   "projects": [
     {
-    "title": "Harbour House",
-    "heroImage": "/uploads/hero4.jpg",
-    "content": "A contemporary coastal home designed to capture light, views, and calm. Natural materials, layered textures and a restrained palette give this modern structure warmth and longevity. Every detail — from bespoke joinery to concealed lighting — is guided by the rhythm of the sea beyond.",
-    "images": [
-        { "src": "/uploads/hero1.jpg", "alt": "Exterior view of Hilltop Residence" },
-        { "src": "/uploads/hero2.jpg", "alt": "Interior living area of Hilltop Residence" },
-        { "src": "/uploads/hero4.jpg", "alt": "Detail of Hilltop Residence" }
-    ]
+      "title": "Winward Way",
+      "heroImage": "/uploads/4722BFEE-667A-4740-AC20-0CC18ECAF98D_1_105_c.jpeg",
+      "images": [
+        {
+          "src": "/uploads/E25266C7-7380-4A3C-824B-BBDE20610341_1_105_c.jpeg",
+          "alt": "Kitchen interior of Winward Way"
+        },
+        {
+          "src": "/uploads/55A62DF8-CB12-40A7-9EEC-886DFFCB1CA1_1_105_c.jpeg",
+          "alt": "Interior living area of Winward Way"
+        },
+        {
+          "src": "/uploads/F6692BCC-947E-4C4A-AADD-940498D84239_1_105_c.jpeg",
+          "alt": "Interior bedroom of Winward Way"
+        }
+      ]
     },
     {
-      "title": "The Mews",
-      "heroImage": "/uploads/hero2.jpg",
-      "content": "A sensitive reimagining of a Victorian mews building. Behind the original brick façade lies a tranquil, light-filled home, where old and new coexist in quiet harmony. The project blends heritage craft with contemporary form, celebrating the textures of time and place.",
+      "title": "IZZA",
       "images": [
-          { "src": "/uploads/hero1.jpg", "alt": "Exterior view of Hilltop Residence" },
-          { "src": "/uploads/hero2.jpg", "alt": "Interior living area of Hilltop Residence" },
-          { "src": "/uploads/hero4.jpg", "alt": "Detail of Hilltop Residence" }
+        {
+          "src": "/uploads/hero1.jpg",
+          "alt": "Exterior view of Hilltop Residence"
+        },
+        {
+          "src": "/uploads/hero2.jpg",
+          "alt": "Interior living area of Hilltop Residence"
+        },
+        {
+          "alt": "Detail of Hilltop Residence"
+        }
       ]
     },
     {
@@ -29,22 +43,29 @@
       "heroImage": "/uploads/hero3.jpg",
       "content": "An elevated rural retreat that balances presence and privacy. Framed views, robust materials and a layered interior palette create a home that feels at once grounded in landscape and luxuriously secluded. The architecture celebrates proportion, rhythm and restraint.",
       "images": [
-          { "src": "/uploads/hero1.jpg", "alt": "Exterior view of Hilltop Residence" },
-          { "src": "/uploads/hero2.jpg", "alt": "Interior living area of Hilltop Residence" },
-          { "src": "/uploads/hero4.jpg", "alt": "Detail of Hilltop Residence" }
+        {
+          "src": "/uploads/hero1.jpg",
+          "alt": "Exterior view of Hilltop Residence"
+        },
+        {
+          "src": "/uploads/hero2.jpg",
+          "alt": "Interior living area of Hilltop Residence"
+        },
+        {
+          "src": "/uploads/hero4.jpg",
+          "alt": "Detail of Hilltop Residence"
+        }
       ]
     },
     {
       "title": "Park Lane Townhouse",
       "heroImage": "/uploads/hero4.jpg",
-      "content": "A listed townhouse restored and reconfigured for modern living. Original Georgian detailing is paired with contemporary interventions that feel both natural and inevitable. Light wells, bespoke cabinetry and handcrafted finishes create a dialogue between eras.",
-      "image": "/uploads/hero1.jpg"
+      "content": "A listed townhouse restored and reconfigured for modern living. Original Georgian detailing is paired with contemporary interventions that feel both natural and inevitable. Light wells, bespoke cabinetry and handcrafted finishes create a dialogue between eras."
     },
     {
       "title": "Riverside Development",
       "heroImage": "/uploads/hero1.jpg",
-      "content": "A design-led urban infill project combining architecture, interiors and development management. The scheme delivers a cohesive sequence of homes shaped by proportion, light and texture — refined yet practical spaces for contemporary city life.",
-      "image": "/uploads/hero1.jpg"
+      "content": "A design-led urban infill project combining architecture, interiors and development management. The scheme delivers a cohesive sequence of homes shaped by proportion, light and texture — refined yet practical spaces for contemporary city life."
     }
   ]
 }

@@ -1,0 +1,276 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroImage from '../../components/HeroImage.astro';
+import projectData from '../../content/projects/projects.json';
+export async function getStaticPaths() {
+function slugify(str) {
+    return str
+    .toLowerCase()
+    .replace(/[^\w]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+const projects = projectData.projects;
+return projects.map((project) => ({
+    params: { slug: slugify(project.title) },
+    props: { project },
+}));
+}
+const { project } = Astro.props;
+---
+<Layout title={project.title}>
+    {project.heroImage && <HeroImage src={project.heroImage} alt={project.title} />}
+    <section class="page-content" transition:name="page-content">
+        <section class="project-detail">
+            <div class="page-intro">
+                <h1>{project.title}</h1>
+                <div class="project-content">
+                    <p>{project.content}</p>
+                </div>
+            </div>
+            <div class="project-gallery" id="projectGallery" aria-live="polite">
+                {project.images && project.images.length > 0
+                ? project.images.map((image, i) => (
+                    <figure class="project-item">
+                        <img
+                        src={image.src}
+                        alt={image.alt || project.title}
+                        loading="lazy"
+                        data-index={i}
+                        class="gallery-image"
+                        />
+                    </figure>
+                    ))
+                : project.image && (
+                    <figure class="project-item">
+                        <img src={project.image} alt={project.title} loading="lazy" data-index={0} class="gallery-image" />
+                    </figure>
+                    )}
+            </div>
+        </section>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close" aria-label="Close lightbox">
+            <span class="close-icon"></span>
+        </button>
+        <img id="lightboxImage" src="" alt="" class="lightbox-image" />
+    </div>
+</Layout>
+<style>
+    :root {
+        --project-aspect-ratio: 3 / 4;
+        --grid-gap: 8rem;
+    }
+    .project-gallery {
+        display: grid;
+        gap: var(--grid-gap);
+        grid-template-columns: 1fr;
+        margin-top: 2rem;
+    }
+    @media (min-width: 768px) {
+        .project-gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+    .project-item {
+        margin: 0;
+        overflow: hidden;
+        aspect-ratio: var(--project-aspect-ratio);
+        background: #eee;
+        display: block;
+    }
+    .project-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        cursor: zoom-in;
+        transition: transform 0.4s ease;
+    }
+    .project-item img:focus,
+    .project-item img:hover {
+        transform: scale(1.03);
+    }
+
+    /* Lightbox Styles */
+    .lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .lightbox.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .lightbox-image {
+        max-width: 90%;
+        max-height: 90vh;
+        object-fit: contain;
+        transform: scale(0.8);
+        opacity: 0;
+        transition: transform 0.4s ease, opacity 0.3s ease;
+    }
+
+    .lightbox.active .lightbox-image {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 1001;
+        padding: 0;
+    }
+
+    .close-icon {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .close-icon::before,
+    .close-icon::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 2px;
+        background: white;
+        transition: background 0.2s ease;
+    }
+
+    .close-icon::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .close-icon::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .lightbox-close:hover .close-icon::before,
+    .lightbox-close:hover .close-icon::after {
+        background: #ccc;
+    }
+
+    @media (max-width: 768px) {
+        .lightbox-close {
+            top: 1rem;
+            right: 1rem;
+        }
+    }
+</style>
+
+<script>
+    let lightbox: HTMLElement | null = null;
+    let lightboxImage: HTMLImageElement | null = null;
+    let closeButton: HTMLElement | null = null;
+    let imageClickHandler: ((e: Event) => void) | null = null;
+    let closeClickHandler: (() => void) | null = null;
+    let backgroundClickHandler: ((e: Event) => void) | null = null;
+    let keydownHandler: ((e: KeyboardEvent) => void) | null = null;
+
+    function initializeLightbox() {
+        lightbox = document.getElementById('lightbox');
+        lightboxImage = document.getElementById('lightboxImage') as HTMLImageElement;
+        closeButton = lightbox?.querySelector('.lightbox-close') as HTMLElement;
+        const galleryImages = document.querySelectorAll('.gallery-image');
+
+        imageClickHandler = (e: Event) => {
+            const target = e.currentTarget as HTMLImageElement;
+            
+            if (lightboxImage && lightbox) {
+                lightboxImage.src = target.src;
+                lightboxImage.alt = target.alt;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        };
+
+        galleryImages.forEach((img) => {
+            img.addEventListener('click', imageClickHandler);
+        });
+
+        closeClickHandler = () => {
+            if (lightbox) {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        };
+
+        backgroundClickHandler = (e: Event) => {
+            if (e.target === lightbox) {
+                closeClickHandler?.();
+            }
+        };
+
+        keydownHandler = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && lightbox?.classList.contains('active')) {
+                closeClickHandler?.();
+            }
+        };
+
+        closeButton?.addEventListener('click', closeClickHandler);
+        lightbox?.addEventListener('click', backgroundClickHandler);
+        document.addEventListener('keydown', keydownHandler);
+    }
+
+    function destroyLightbox() {
+        const galleryImages = document.querySelectorAll('.gallery-image');
+        
+        if (imageClickHandler) {
+            galleryImages.forEach((img) => {
+                img.removeEventListener('click', imageClickHandler!);
+            });
+        }
+
+        if (closeButton && closeClickHandler) {
+            closeButton.removeEventListener('click', closeClickHandler);
+        }
+
+        if (lightbox && backgroundClickHandler) {
+            lightbox.removeEventListener('click', backgroundClickHandler);
+        }
+
+        if (keydownHandler) {
+            document.removeEventListener('keydown', keydownHandler);
+        }
+
+        // Reset state
+        if (lightbox?.classList.contains('active')) {
+            document.body.style.overflow = '';
+        }
+
+        lightbox = null;
+        lightboxImage = null;
+        closeButton = null;
+        imageClickHandler = null;
+        closeClickHandler = null;
+        backgroundClickHandler = null;
+        keydownHandler = null;
+    }
+
+    document.addEventListener('astro:page-load', initializeLightbox);
+    document.addEventListener('astro:before-swap', destroyLightbox);
+</script>

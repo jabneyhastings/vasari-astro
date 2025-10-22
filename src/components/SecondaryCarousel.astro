@@ -1,317 +1,344 @@
 ---
-import { Image } from 'astro:assets';
-import MarkdownIt from 'markdown-it';
 import CmsImage from '../components/CmsImage.astro';
-import rightArrow from '../images/arrow-right.svg';
-import leftArrow from '../images/arrow-left.svg';
+import { slugify } from '../utils/slugify.js';
 
-const md = new MarkdownIt();
-
-interface Slide {
-    image: string;
-    text?: string;
+interface Project {
+    title: string;
+    heroImage: string;
 }
 
 interface Props {
-    slides: Slide[];
+    projects: Project[];
 }
 
-const { slides } = Astro.props;
+const { projects } = Astro.props;
 ---
 
-<section class="slider">
-    <header class="slider__header">
-        <div class="slider__controls">
-            <button class="slider__btn is-disabled" id="prevBtn">
-                <Image src={leftArrow} alt="Previous" width="56" height="28" />
-            </button>
-            <button class="slider__btn" id="nextBtn">
-                <Image src={rightArrow} alt="Next" width="56" height="28" />
-            </button>
-        </div>
-    </header>
-
-    <div class="slider__viewport">
-        <div class="slider__track" id="sliderTrack">
-            {slides.map((slide) => (
-                <div class="slider__slide">
-                    <div class="slider__media">
+<section class="projects-carousel">
+    <div class="projects-carousel__viewport">
+        <div class="projects-carousel__track" id="projectsTrack">
+            {projects.map((project) => (
+                <a 
+                    href={`/projects/${slugify(project.title)}`}
+                    class="projects-carousel__slide"
+                >
+                    <div class="projects-carousel__media">
                         <CmsImage
-                            src={slide.image}
-                            alt="Service Image"
-                            height={400}
+                            src={project.heroImage}
+                            alt={project.title}
+                            height={500}
                             loading="lazy"
                         />
                     </div>
-                    {slide.text && (
-                        <div class="slider__caption" set:html={md.render(slide.text)} />
-                    )}
-                </div>
+                </a>
             ))}
         </div>
     </div>
 </section>
 
 <style>
-    .slider {
-        padding: 0 2rem;
+    .projects-carousel {
+        padding: 4rem 2rem;
         max-width: var(--s-page-width);
         margin: 0 auto;
     }
 
-    .slider__header {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        margin-bottom: 2rem;
+    .projects-carousel__viewport {
+        position: relative;
+        overflow: hidden;
+        touch-action: pan-y pinch-zoom;
     }
 
-    .slider__controls {
+    .projects-carousel__track {
         display: flex;
-        gap: 1rem;
+        gap: 8rem;
+        transition: transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: grab;
     }
 
-    .slider__btn {
-        border: none;
-        background: transparent;
-        cursor: pointer;
+    .projects-carousel__track:active {
+        cursor: grabbing;
+    }
+
+    .projects-carousel__track.is-dragging {
+        transition: none;
+        cursor: grabbing;
+    }
+
+    .projects-carousel__slide {
+        flex: 0 0 calc((100% - 4rem) / 2);
+        display: block;
+        overflow: hidden;
+        text-decoration: none;
+        aspect-ratio: 3 / 4;
+        position: relative;
+    }
+
+    .projects-carousel__media {
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: opacity 0.3s ease;
-    }
-
-    .slider__btn:hover:not(.is-disabled) {
-        opacity: 0.6;
-    }
-
-    .slider__btn.is-disabled {
-        opacity: 0.3;
-        cursor: default;
-    }
-
-    .slider__viewport {
-        position: relative;
+        background: #f5f5f5;
         overflow: hidden;
     }
 
-    .slider__track {
-        display: flex;
-        gap: 2rem;
-        transition: transform 0.5s ease;
-    }
-
-    .slider__slide {
-        flex: 0 0 calc((100% / 3) - (2rem * 2 / 3));
-        display: flex;
-        flex-direction: column;
-        background: var(--c-c-background);
-        overflow: hidden;
-    }
-
-    .slider__media {
-        flex: 1;
-        height: 400px;
-    }
-
-    :global(.slider__media img) {
+    :global(.projects-carousel__media img) {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
+        transition: transform 0.6s ease;
     }
 
-    .slider__caption {
-        padding: 1rem 0 0 0;
-        text-align: left;
+    :global(.projects-carousel__media:hover img) {
+        transform: scale(1.05);
+        opacity: 1;
     }
 
-    :global(.slider__caption p) {
-        font-size: var(--fs-small);
-        line-height: 1.8;
-        margin: 0;
-    }
-
-    @media (max-width: 1024px) {
-        .slider__track {
-            gap: 1.5rem;
-        }
-        .slider__slide {
-            flex: 0 0 calc((100% / 2) - (1.5rem / 2));
+    @media (prefers-reduced-motion: reduce) {
+        .projects-carousel__track {
+            transition: none;
         }
     }
 
     @media (max-width: 768px) {
-        .slider__header {
-            justify-content: center;
+        .projects-carousel {
+            padding: 3rem 1rem;
         }
-        .slider__track {
-            gap: 1rem;
+
+        .projects-carousel__track {
+            gap: 2rem;
         }
-        .slider__slide {
+
+        .projects-carousel__slide {
             flex: 0 0 100%;
+            aspect-ratio: 3 / 4;
         }
     }
 </style>
 
 <script>
-    interface SliderElements {
-        track: HTMLElement;
-        prevBtn: HTMLButtonElement;
-        nextBtn: HTMLButtonElement;
-        slides: NodeListOf<HTMLElement>;
-    }
-
-    class Slider {
-        private root: HTMLElement;
-        private track: HTMLElement;
-        private prevBtn: HTMLButtonElement;
-        private nextBtn: HTMLButtonElement;
-        private slides: NodeListOf<HTMLElement>;
-        private currentIndex: number = 0;
-        private lastWidth: number = window.innerWidth;
-        private resizeTimeout: number | null = null;
-
-        constructor(root: HTMLElement) {
+    class ProjectsCarousel {
+        constructor(root) {
             this.root = root;
-            
-            const elements = this.getElements();
-            if (!elements) {
-                console.error('Slider: Required elements not found');
-                return;
-            }
+            this.track = this.root.querySelector('#projectsTrack');
+            this.slides = Array.from(this.root.querySelectorAll('.projects-carousel__slide'));
+            this.currentIndex = this.slides.length; // start at the middle set
+            this.autoplayInterval = null;
+            this.touchState = { startX: 0, currentX: 0, isDragging: false };
+            this.hasDragged = false;
+            this.isHovered = false;
+            this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-            this.track = elements.track;
-            this.prevBtn = elements.prevBtn;
-            this.nextBtn = elements.nextBtn;
-            this.slides = elements.slides;
+            if (!this.track || this.slides.length === 0) return;
 
+            this.cloneSlides();
             this.bindEvents();
-            this.updatePosition();
+            this.updatePosition(false);
+            if (!this.prefersReducedMotion) this.startAutoplay();
         }
 
-        private getElements(): SliderElements | null {
-            const track = this.root.querySelector<HTMLElement>('#sliderTrack');
-            const prevBtn = this.root.querySelector<HTMLButtonElement>('#prevBtn');
-            const nextBtn = this.root.querySelector<HTMLButtonElement>('#nextBtn');
-            const slides = this.root.querySelectorAll<HTMLElement>('.slider__slide');
+        cloneSlides() {
+            const clonesBefore = this.slides.map(slide => slide.cloneNode(true));
+            const clonesAfter = this.slides.map(slide => slide.cloneNode(true));
 
-            if (!track || !prevBtn || !nextBtn || slides.length === 0) {
-                return null;
-            }
+            clonesBefore.forEach(clone => this.track.insertBefore(clone, this.track.firstChild));
+            clonesAfter.forEach(clone => this.track.appendChild(clone));
 
-            return { track, prevBtn, nextBtn, slides };
+            this.allSlides = Array.from(this.track.querySelectorAll('.projects-carousel__slide'));
         }
 
-        private bindEvents(): void {
-            this.prevBtn.addEventListener('click', () => this.goPrev());
-            this.nextBtn.addEventListener('click', () => this.goNext());
+        bindEvents() {
+            this.track.addEventListener('mousedown', e => this.handleDragStart(e));
+            this.track.addEventListener('mousemove', e => this.handleDragMove(e));
+            this.track.addEventListener('mouseup', e => this.handleDragEnd(e));
+            this.track.addEventListener('mouseleave', e => this.handleDragEnd(e));
+
+            this.track.addEventListener('touchstart', e => this.handleTouchStart(e), { passive: false });
+            this.track.addEventListener('touchmove', e => this.handleTouchMove(e), { passive: false });
+            this.track.addEventListener('touchend', e => this.handleTouchEnd(e));
+
+            this.root.addEventListener('mouseenter', () => {
+                this.isHovered = true;
+                this.pauseAutoplay();
+            });
+            this.root.addEventListener('mouseleave', () => {
+                this.isHovered = false;
+                if (!this.touchState.isDragging) this.resumeAutoplay();
+            });
+
+            this.track.addEventListener('click', e => {
+                if (this.hasDragged) e.preventDefault();
+            });
+
             window.addEventListener('resize', () => this.handleResize());
         }
 
-        private getGapSize(): number {
-            const trackStyles = window.getComputedStyle(this.track);
-            const gap = trackStyles.gap || '0px';
+        getGapSize() {
+            const gap = getComputedStyle(this.track).gap || '0px';
             return parseInt(gap, 10) || 0;
         }
 
-        private getVisibleCount(): number {
-            if (this.slides.length === 0) return 1;
-            
-            const slideWidth = this.slides[0].clientWidth;
-            const gapSize = this.getGapSize();
-            const viewportWidth = this.track.parentElement?.clientWidth || 0;
-            
-            // Calculate how many slides fit including gaps
-            const slideWithGap = slideWidth + gapSize;
-            const visibleCount = Math.floor((viewportWidth + gapSize) / slideWithGap);
-            
-            return Math.max(1, Math.min(visibleCount, this.slides.length));
+        getVisibleCount() {
+            return window.innerWidth <= 768 ? 1 : 2;
         }
 
-        private updatePosition(): void {
-            if (this.slides.length === 0) return;
-
-            const slideWidth = this.slides[0].clientWidth;
+        updatePosition(smooth = true) {
+            const slideWidth = this.allSlides[0].clientWidth;
             const gapSize = this.getGapSize();
             const offset = this.currentIndex * (slideWidth + gapSize);
-            
+
+            if (!smooth) this.track.style.transition = 'none';
             this.track.style.transform = `translateX(-${offset}px)`;
-
-            // Update button states
-            this.prevBtn.classList.toggle('is-disabled', this.currentIndex === 0);
-            
-            const maxIndex = Math.max(0, this.slides.length - this.getVisibleCount());
-            this.nextBtn.classList.toggle('is-disabled', this.currentIndex >= maxIndex);
+            if (!smooth) requestAnimationFrame(() => (this.track.style.transition = ''));
         }
 
-        private goNext(): void {
-            const maxIndex = Math.max(0, this.slides.length - this.getVisibleCount());
-            if (this.currentIndex < maxIndex) {
-                this.currentIndex++;
-                this.updatePosition();
-            }
+        snapToNearest() {
+            const slideWidth = this.allSlides[0].clientWidth + this.getGapSize();
+            const rawOffset = parseFloat(this.track.style.transform.replace(/[^0-9.\-]/g, '')) || 0;
+            const approxIndex = Math.round(rawOffset / slideWidth);
+            this.currentIndex = Math.min(Math.max(approxIndex, 0), this.allSlides.length - 1);
+            this.updatePosition(true);
         }
 
-        private goPrev(): void {
-            if (this.currentIndex > 0) {
-                this.currentIndex--;
-                this.updatePosition();
-            }
+        goNext() {
+            this.currentIndex++;
+            this.updatePosition(true);
+            this.checkLoopEdges();
         }
 
-        private handleResize(): void {
-            if (this.resizeTimeout) {
-                clearTimeout(this.resizeTimeout);
-            }
+        goPrev() {
+            this.currentIndex--;
+            this.updatePosition(true);
+            this.checkLoopEdges();
+        }
 
-            this.resizeTimeout = window.setTimeout(() => {
-                const currentWidth = window.innerWidth;
-                
-                if (Math.abs(currentWidth - this.lastWidth) > 50) {
-                    const oldVisible = this.getVisibleCount();
-                    const group = Math.floor(this.currentIndex / oldVisible);
-                    
-                    // Recalculate after resize
-                    const newVisible = this.getVisibleCount();
-                    const maxIndex = Math.max(0, this.slides.length - newVisible);
-                    
-                    this.currentIndex = Math.min(group * newVisible, maxIndex);
-                    this.lastWidth = currentWidth;
+        checkLoopEdges() {
+            const total = this.allSlides.length;
+            const base = this.slides.length;
+
+            // Loop back if beyond end or start
+            setTimeout(() => {
+                if (this.currentIndex >= total - base) {
+                    this.track.style.transition = 'none';
+                    this.currentIndex -= base;
+                    this.updatePosition(false);
+                } else if (this.currentIndex < base) {
+                    this.track.style.transition = 'none';
+                    this.currentIndex += base;
+                    this.updatePosition(false);
                 }
-                
-                this.updatePosition();
-            }, 150);
+            }, 400); // shorter than animation duration so it happens invisibly
         }
 
-        public destroy(): void {
-            if (this.resizeTimeout) {
-                clearTimeout(this.resizeTimeout);
-                this.resizeTimeout = null;
-            }
+        handleDragStart(e) {
+            if (e.button !== 0) return;
+            e.preventDefault();
+            this.touchState.startX = e.clientX;
+            this.touchState.currentX = e.clientX;
+            this.touchState.isDragging = true;
+            this.hasDragged = false;
+            this.track.classList.add('is-dragging');
+            this.pauseAutoplay();
+        }
 
-            this.prevBtn.removeEventListener('click', () => this.goPrev());
-            this.nextBtn.removeEventListener('click', () => this.goNext());
-            window.removeEventListener('resize', () => this.handleResize());
+        handleDragMove(e) {
+            if (!this.touchState.isDragging) return;
+            this.hasDragged = true;
+            const diff = e.clientX - this.touchState.startX;
+            const slideWidth = this.allSlides[0].clientWidth;
+            const gapSize = this.getGapSize();
+            const baseOffset = this.currentIndex * (slideWidth + gapSize);
+            this.track.style.transition = 'none';
+            this.track.style.transform = `translateX(-${baseOffset - diff}px)`;
+        }
+
+        handleDragEnd(e) {
+            if (!this.touchState.isDragging) return;
+            this.track.classList.remove('is-dragging');
+            const diff = e.clientX - this.touchState.startX;
+            const threshold = 50;
+
+            if (Math.abs(diff) > threshold) diff > 0 ? this.goPrev() : this.goNext();
+            else this.snapToNearest();
+
+            this.touchState.isDragging = false;
+            if (!this.isHovered) this.resumeAutoplay();
+        }
+
+        handleTouchStart(e) {
+            const touch = e.touches[0];
+            this.touchState.startX = touch.clientX;
+            this.touchState.currentX = touch.clientX;
+            this.touchState.isDragging = true;
+            this.hasDragged = false;
+            this.track.classList.add('is-dragging');
+            this.pauseAutoplay();
+        }
+
+        handleTouchMove(e) {
+            if (!this.touchState.isDragging) return;
+            const touch = e.touches[0];
+            const diff = touch.clientX - this.touchState.startX;
+            const slideWidth = this.allSlides[0].clientWidth;
+            const gapSize = this.getGapSize();
+            const baseOffset = this.currentIndex * (slideWidth + gapSize);
+            this.track.style.transition = 'none';
+            this.track.style.transform = `translateX(-${baseOffset - diff}px)`;
+        }
+
+        handleTouchEnd() {
+            if (!this.touchState.isDragging) return;
+            this.track.classList.remove('is-dragging');
+            const diff = this.touchState.currentX - this.touchState.startX;
+            const threshold = 50;
+
+            if (Math.abs(diff) > threshold) diff > 0 ? this.goPrev() : this.goNext();
+            else this.snapToNearest();
+
+            this.touchState.isDragging = false;
+            this.resumeAutoplay();
+        }
+
+        handleResize() {
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(() => this.updatePosition(false), 150);
+        }
+
+        startAutoplay() {
+            this.autoplayInterval = setInterval(() => {
+                if (!this.touchState.isDragging && !this.isHovered) this.goNext();
+            }, 3000);
+        }
+
+        pauseAutoplay() {
+            clearInterval(this.autoplayInterval);
+            this.autoplayInterval = null;
+        }
+
+        resumeAutoplay() {
+            if (!this.prefersReducedMotion && !this.autoplayInterval) this.startAutoplay();
+        }
+
+        destroy() {
+            this.pauseAutoplay();
         }
     }
 
-    let sliderInstance: Slider | null = null;
+    let carouselInstance = null;
 
-    const initializeSlider = (): void => {
-        const root = document.querySelector<HTMLElement>('.slider');
-        if (root) {
-            sliderInstance = new Slider(root);
-        }
+    const initializeCarousel = () => {
+        const root = document.querySelector('.projects-carousel');
+        if (root) carouselInstance = new ProjectsCarousel(root);
     };
 
-    const destroySlider = (): void => {
-        if (sliderInstance) {
-            sliderInstance.destroy();
-            sliderInstance = null;
-        }
+    const destroyCarousel = () => {
+        if (carouselInstance) carouselInstance.destroy();
+        carouselInstance = null;
     };
 
-    document.addEventListener('astro:page-load', initializeSlider);
-    document.addEventListener('astro:before-swap', destroySlider);
+    document.addEventListener('astro:page-load', initializeCarousel);
+    document.addEventListener('astro:before-swap', destroyCarousel);
 </script>

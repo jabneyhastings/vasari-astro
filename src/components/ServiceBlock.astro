@@ -3,11 +3,10 @@ import CmsImage from '../components/CmsImage.astro';
 import MarkdownIt from 'markdown-it';
 const md = new MarkdownIt();
 const { title, content, image, index } = Astro.props;
-const isEven = index % 2 === 0;
 ---
 
 <section 
-    class={`service-block service-block--${isEven ? 'even' : 'odd'} ${!image ? 'service-block--no-image' : ''}`} 
+    class={`service-block service-block--even ${!image ? 'service-block--no-image' : ''}`} 
     data-animate
     data-astro-cid-service-block
 >
@@ -38,7 +37,7 @@ const isEven = index % 2 === 0;
     display: flex;
     align-items: center;
     gap: 4rem;
-    margin: 8rem 0;
+    margin: 0  0 8rem 0;
 }
 
 .service-block--even {
@@ -67,7 +66,6 @@ const isEven = index % 2 === 0;
 
 .service-block__text {
     flex: 1;
-    max-width: 600px;
 }
 
 /* Base hidden state + fallback transitions */

@@ -39,8 +39,9 @@ const { title, description } = Astro.props;
     <link rel="canonical" href="https://vasaridesign.com/" />
     <meta name="theme-color" content="#F1EEE9" />
 
-    <link rel="preload" href="/fonts/eb-garamond-regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/eb-garamond-regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&display=swap" rel="stylesheet">
 
     <title>Vasari Design - {title}</title>
 

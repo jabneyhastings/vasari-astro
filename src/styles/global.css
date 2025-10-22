@@ -1,17 +1,17 @@
 :root {
     /* Colours */
-    --c-font: #575148;
+    --c-font: #49443c;
     --c-background: #F1EEE9;
 
     /* Sizes */
-    --s-page-width: 1200px;
+    --s-page-width: 1400px;
     --s-padding: 130px;
 
     /* Fonts */
-    --ff: "EB Garamond", serif;
-    --fs: 22px;
-    --fs-large: 40px;
-    --fs-small: 18px;
+    --ff: 'amblelight';
+    --fs: 14px;
+    --fs-large: 20px;
+    --fs-small: 14px;
 }
 
 * {
@@ -32,8 +32,9 @@ html, body {
 }
 
 body {
-    font-family: var(--ff);
-    font-weight: 400;
+    font-family: var(--ff);;
+    font-optical-sizing: auto;
+    font-weight: 300;
     font-style: normal;
     line-height: 1.5;
     letter-spacing: -0.02em;
@@ -49,14 +50,16 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+    font-family: "Libre Caslon Display", serif;
     font-weight: 400;
     line-height: 1.2;
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    margin-bottom: 0.3rem;
+    letter-spacing: 3px;
 }
 
 h1 {
-    font-size: 48px;
+    font-size: 24px;
 }
 
 h2 {
@@ -78,7 +81,6 @@ a {
 }
 
 a:hover {
-    opacity: 0.4;
     text-decoration-color: var(--c-font);
 }
 
@@ -98,7 +100,11 @@ a:hover {
 }
 
 .page-content h1 {
-    margin-bottom: 80px;
+    margin-bottom: 1.5rem;
+}
+
+.page-intro {
+    padding-bottom: 80px;
 }
 
 .header__spacer {

@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroImage from '../../components/HeroImage.astro';
+import CmsImage from '../../components/CmsImage.astro';
+import projectData from '../../content/projects/projects.json';
+import { Image } from 'astro:assets';
+
+const { title, description, heroImage, body, projects } = projectData;
+
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^\w]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+---
+
+<Layout title={title} description={description}>
+  {heroImage && <HeroImage src={heroImage} alt={title} />}
+
+  <section class="page-content" transition:name="page-content">
+    <section class="projects-intro">
+        <h1>{title}</h1>
+        <p set:html={body.replace(/\n/g, '<br>')}></p>
+    </section>
+
+    <section class="projects-list">
+      {projects.map((project) => (
+        <article class="project-card">
+          <a href={`/projects/${slugify(project.title)}`}>
+            <figure class="project-image">
+                <Image
+                  src={project.heroImage}
+                  alt={project.title}
+                  width={600}
+                  height={800}
+                  loading="lazy"
+                />
+            </figure>
+            <div class="project-info">
+              <h2>{project.title}</h2>
+            </div>
+          </a>
+        </article>
+      ))}
+    </section>
+  </section>
+</Layout>
+
+<style>
+:root {
+  --project-aspect-ratio: 3 / 4;
+  --grid-gap: 8rem;
+}
+
+.projects-intro {
+  margin-bottom: 80px;
+}
+
+.projects-list {
+  display: grid;
+  gap: var(--grid-gap);
+  grid-template-columns: 1fr;
+}
+
+/* two columns on medium+ screens */
+@media (min-width: 768px) {
+  .projects-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* card */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  width: 100%;
+  overflow: hidden;
+  /* keep the card from being treated as overflow source */
+}
+
+/* anchor fills card */
+.project-card a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* portrait/“profile” image container */
+.project-image {
+  aspect-ratio: var(--project-aspect-ratio);
+  width: 100%;
+  overflow: hidden;
+  display: block;
+  margin: 0; /* reset default figure margin */
+}
+
+/* make images respectful of container and not expand it */
+.project-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-width: 100%;
+  margin: 0;
+  -o-object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+/* subtle hover zoom */
+.project-card:hover .project-image img {
+  transform: scale(1.03);
+}
+
+/* card inner content */
+.project-info {
+  margin-top: 1rem;
+  padding: 0 0.25rem; /* small padding so text doesn't touch edges */
+}
+
+.project-info h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+/* location */
+.project-location {
+  color: var(--text-muted, #777);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* small screens: reduce gap so layout feels tighter */
+@media (max-width: 420px) {
+  :root { --grid-gap: 1rem; }
+}
+</style>

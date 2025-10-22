@@ -18,7 +18,7 @@ const { title, description, heroImage, services, body } = entry.data;
     <HeroImage src={heroImage} alt={title} />
   )}
   <main class="services-page page-content">
-    <section transition:name="page-content">
+    <section class="services-page__intro" transition:name="page-content">
       <h1>{title}</h1>
       <div class="text-content" set:html={md.render(body ?? '')} />
     </section>
@@ -32,3 +32,9 @@ const { title, description, heroImage, services, body } = entry.data;
     ))}
   </main>
 </Layout>
+
+<style>
+.services-page__intro {
+    margin-bottom: 80px;
+}
+</style>

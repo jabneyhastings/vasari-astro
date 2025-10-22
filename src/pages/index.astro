@@ -4,18 +4,18 @@ import HeroCarousel from '../components/HeroCarousel.astro';
 import SecondaryCarousel from '../components/SecondaryCarousel.astro';
 import TextBlock from '../components/TextBlock.astro';
 import { getEntry } from 'astro:content';
+import projectData from '../content/projects/projects.json';
 
 const homeData = await getEntry('home', 'home');
-
 if (!homeData) {
-  throw new Error('Home page data not found');
+    throw new Error('Home page data not found');
 }
 
-const { heroCarousel, aboutSection, secondaryCarousel, textBlock } = homeData.data;
+const { heroCarousel, aboutSection, textBlock } = homeData.data;
+const projects = projectData.projects;
 ---
 
 <Layout title={homeData.data.title}>
-    <!-- Hero Carousel -->
     {heroCarousel && (
         <HeroCarousel
             slides={heroCarousel.map(slide => ({
@@ -25,29 +25,19 @@ const { heroCarousel, aboutSection, secondaryCarousel, textBlock } = homeData.da
         />
     )}
 
-    <!-- About Section -->
     {aboutSection && (
         <TextBlock 
             id="about" 
             className="about-section"
-            title={aboutSection.title}
             content={aboutSection.content}
         />
     )}
 
-    <!-- Secondary Carousel -->
-    <section id="services">
-        {secondaryCarousel && (
-            <SecondaryCarousel
-                slides={secondaryCarousel.slides}
-            />
-        )}
+    <section id="projects">
+        <SecondaryCarousel projects={projects} />
     </section>
 
-    <!-- Text Block -->
     {textBlock && (
-        <TextBlock
-            content={textBlock.content}
-        />
+        <TextBlock content={textBlock.content} />
     )}
 </Layout>

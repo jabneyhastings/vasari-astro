@@ -129,6 +129,35 @@ content:
             type: image
             required: false
 
+  - name: "projects"
+    label: "Projects"
+    type: file
+    path: "src/content/projects/projects.json"
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: rich-text
+        options:
+          media: false
+          output: html
+      - name: heroImage
+        label: Hero Image
+        type: image
+      - name: images
+        label: Additional Images
+        type: object
+        list: true
+        fields:
+          - name: image
+            label: Image
+            type: image
+          - name: alt
+            label: Alt Text
+            type: string
+            required: false
 
 collections:
   - name: "pages"
@@ -137,3 +166,4 @@ collections:
       - "home"
       - "about"
       - "services"
+      - "projects"

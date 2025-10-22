@@ -5,30 +5,34 @@ import logoLight from "../images/logo-light.png";
 import logoDark from "../images/logo-dark.png";
 ---
 <header id="site-header" class="header" transition:name="site-header">
+  <nav class="header-nav">
     <a href={createUrl('services')} class="text-link">Services</a>
+
     <a href={createUrl('')} class="logo">
-        <Image 
-            id="site-logo-light"
-            src={logoLight}
-            alt="Vasari Design Light" 
-            width="105" 
-            height="93" 
-            loading="eager" 
-            fetchpriority="high" 
-            class="logo-img"
-        />
-        <Image 
-            id="site-logo-dark"
-            src={logoDark}
-            alt="Vasari Design Dark" 
-            width="105" 
-            height="93" 
-            loading="eager" 
-            fetchpriority="high" 
-            class="logo-img hidden"
-        />
+      <Image
+        id="site-logo-light"
+        src={logoLight}
+        alt="Vasari Design Light"
+        width="105"
+        height="93"
+        loading="eager"
+        fetchpriority="high"
+        class="logo-img"
+      />
+      <Image
+        id="site-logo-dark"
+        src={logoDark}
+        alt="Vasari Design Dark"
+        width="105"
+        height="93"
+        loading="eager"
+        fetchpriority="high"
+        class="logo-img hidden"
+      />
     </a>
+
     <a href={createUrl('about')} class="text-link">About</a>
+  </nav>
 </header>
 
 <script>
@@ -78,68 +82,79 @@ import logoDark from "../images/logo-dark.png";
         z-index: 1000;
         padding: 1rem 2rem;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        justify-content: center; /* center the nav as a unit */
         pointer-events: none;
         font-size: 24px;
         transition: background-color 0.3s ease, color 0.3s ease;
         view-transition-name: site-header;
     }
-    
-    .header a {
+
+    .header-nav {
+        display: flex;
+        align-items: flex-end; /* text aligns with bottom of logo */
+        gap: 1.5rem; /* small gap between each element */
+        pointer-events: auto;
+    }
+
+    /* Links */
+    .text-link {
         color: white;
         text-decoration: none;
         transition: opacity 0.3s ease, color 0.3s ease;
-        pointer-events: auto;
         line-height: 1;
         text-transform: uppercase;
+        font-size: 1rem;
     }
-    
-    .header a:hover {
+
+    .text-link:hover {
         opacity: 0.8;
     }
-    
-    /* When scrolled */
-    .header.scrolled {
-        background-color: var(--c-background);
-        color: var(--c-font);
-    }
-    
-    .header.scrolled a {
-        color: var(--c-font);
-    }
-    
+
+    /* Logo images */
     .logo-img {
         display: block;
         transition: opacity 0.3s ease;
     }
-    
+
     .hidden {
         display: none;
     }
-    
+
+    /* Scrolled state */
+    .header.scrolled {
+        background-color: var(--c-background);
+        color: var(--c-font);
+    }
+
+    .header.scrolled .text-link {
+        color: var(--c-font);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .header {
             padding: 1rem;
         }
+
+        .header-nav {
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
     }
-    
     ::view-transition-old(site-header) {
         animation: header-slide-up 0.6s ease forwards;
     }
-    
-    /* New header: slides down after hero finishes */
+
     ::view-transition-new(site-header) {
         animation: header-slide-down 0.6s ease forwards;
-        animation-delay: 0.2s; /* slight delay for stagger effect */
+        animation-delay: 0.2s;
     }
-    
+
     @keyframes header-slide-up {
         from { transform: translateY(0); opacity: 1; }
         to   { transform: translateY(-100%); opacity: 0; }
     }
-    
+
     @keyframes header-slide-down {
         from { transform: translateY(-100%); opacity: 0; }
         to   { transform: translateY(0); opacity: 1; }

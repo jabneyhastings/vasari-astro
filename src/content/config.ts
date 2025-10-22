@@ -50,8 +50,22 @@ const services = defineCollection({
   }),
 });
 
+const projects = defineCollection({
+  type: 'data',
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    heroImage: z.string().optional(),
+    images: z.array(z.object({
+      image: z.string(),
+      alt: z.string().optional(),
+    })).optional(),
+  }),
+});
+
 export const collections = {
   pages,
   home,
   services,
+  projects,
 };

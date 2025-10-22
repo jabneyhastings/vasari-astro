@@ -130,34 +130,55 @@ content:
             required: false
 
   - name: "projects"
-    label: "Projects"
+    label: "Projects Page"
     type: file
     path: "src/content/projects/projects.json"
     fields:
       - name: title
-        label: Title
+        label: Page Title
         type: string
       - name: description
-        label: Description
-        type: rich-text
-        options:
-          media: false
-          output: html
+        label: Page Description
+        type: text
       - name: heroImage
         label: Hero Image
         type: image
-      - name: images
-        label: Additional Images
+      - name: body
+        label: Body Content
+        type: markdown
+        options:
+          media: true
+          output: raw
+      - name: projects
+        label: Individual Projects
         type: object
         list: true
         fields:
-          - name: image
-            label: Image
-            type: image
-          - name: alt
-            label: Alt Text
+          - name: title
+            label: Project Title
             type: string
-            required: false
+          - name: heroImage
+            label: Project Hero Image
+            type: image
+          - name: content
+            label: Project Description
+            type: markdown
+            options:
+              media: true
+              output: raw
+          - name: images
+            label: Gallery Images
+            type: object
+            list: true
+            fields:
+              - name: src
+                label: Image
+                type: image
+              - name: alt
+                label: Alt Text
+                type: string
+                required: false
+
 
 collections:
   - name: "pages"

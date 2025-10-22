@@ -56,10 +56,22 @@ const projects = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     heroImage: z.string().optional(),
-    images: z.array(z.object({
-      image: z.string(),
-      alt: z.string().optional(),
-    })).optional(),
+    body: z.string().optional(),
+    projects: z.array(
+      z.object({
+        title: z.string(),
+        heroImage: z.string().optional(),
+        content: z.string().optional(),
+        images: z
+          .array(
+            z.object({
+              src: z.string(),
+              alt: z.string().optional(),
+            })
+          )
+          .optional(),
+      })
+    ),
   }),
 });
 

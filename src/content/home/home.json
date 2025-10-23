@@ -30,26 +30,6 @@
     "title": "About",
     "content": "At Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging. Every project is shaped with care: guided by craft, grounded in integrity, and designed with a deep understanding of how people want to live --- creating spaces that feel effortless, honest and built to last."
   },
-  "secondaryCarousel": {
-    "slides": [
-      {
-        "image": "/uploads/slider1.jpg",
-        "text": "### At Vasari\n\nAt Vasari, we believe a home should offer more than visual beauty alone --- it should offer depth, clarity, and a sense of belonging."
-      },
-      {
-        "image": "/uploads/slider2.jpg"
-      },
-      {
-        "image": "/uploads/slider3.jpg"
-      },
-      {
-        "image": "/uploads/slider4.jpg"
-      },
-      {
-        "image": "/uploads/slider5.jpg"
-      }
-    ]
-  },
   "textBlock": {
     "content": "We bring architecture, construction, interiors, and delivery together under one roof, guiding each stage with care and clarity. From earliest ideas to the final finish, our approach is seamless, deliberate, and highly personal --- so nothing is rushed, and nothing is left to chance. The result is a home that feels complete in each sense."
   }

@@ -22,13 +22,6 @@ const home = defineCollection({
       title: z.string(),
       content: z.string(),
     }).optional(),
-    secondaryCarousel: z.object({
-      slides: z.array(z.object({
-        image: z.string(),
-        text: z.string().optional(),
-        alt: z.string().optional(),
-      })),
-    }).optional(),
     textBlock: z.object({
       content: z.string(),
     }).optional(),

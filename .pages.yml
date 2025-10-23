@@ -14,9 +14,9 @@ content:
 
       - name: heroCarousel
         label: Hero Carousel
-        type: object     # Use object for structured fields
-        list: true       # This makes the field an array
-        fields:          # Inner fields define the structure of each item
+        type: object
+        list: true
+        fields:
           - name: image
             label: Image
             type: image
@@ -38,30 +38,6 @@ content:
             options:
               media: false
               output: html
-
-      - name: secondaryCarousel
-        label: Secondary Carousel
-        type: object
-        fields:
-          - name: slides
-            label: Slides
-            type: object
-            list: true
-            fields:
-              - name: image
-                label: Image
-                type: image
-              - name: text
-                label: Text
-                type: rich-text
-                options:
-                  media: false
-                  output: html
-                required: false
-              - name: alt
-                label: Alt Text
-                type: string
-                required: false
 
       - name: textBlock
         label: Text Block

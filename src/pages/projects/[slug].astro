@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import HeroImage from '../../components/HeroImage.astro';
+import CmsImage from '../../components/CmsImage.astro';
 import projectData from '../../content/projects/projects.json';
 export async function getStaticPaths() {
 function slugify(str) {
@@ -28,23 +29,18 @@ const { project } = Astro.props;
                 </div>
             </div>
             <div class="project-gallery" id="projectGallery" aria-live="polite">
-                {project.images && project.images.length > 0
-                ? project.images.map((image, i) => (
+                {project.images && project.images.map((image, i) => (
                     <figure class="project-item">
-                        <img
-                        src={image.src}
-                        alt={image.alt || project.title}
-                        loading="lazy"
-                        data-index={i}
-                        class="gallery-image"
+                        <CmsImage
+                            src={image.src}
+                            alt={image.alt || project.title}
+                            loading="lazy"
+                            data-index={i}
+                            width={600}
+                            class="gallery-image"
                         />
                     </figure>
-                    ))
-                : project.image && (
-                    <figure class="project-item">
-                        <img src={project.image} alt={project.title} loading="lazy" data-index={0} class="gallery-image" />
-                    </figure>
-                    )}
+                    ))}
             </div>
         </section>
     </section>
@@ -80,7 +76,7 @@ const { project } = Astro.props;
         background: #eee;
         display: block;
     }
-    .project-item img {
+    :global(.project-item img) {
         width: 100%;
         height: 100%;
         object-fit: cover;

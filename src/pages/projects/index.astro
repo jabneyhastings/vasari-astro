@@ -2,6 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import CmsImage from '../../components/CmsImage.astro';
+
+import MarkdownIt from 'markdown-it';
+const md = new MarkdownIt();
+
 import projectData from '../../content/projects/projects.json';
 import { Image } from 'astro:assets';
 
@@ -21,7 +25,7 @@ function slugify(str) {
   <section class="page-content" transition:name="page-content">
     <section class="projects-intro">
         <h1>{title}</h1>
-        <p set:html={body.replace(/\n/g, '<br>')}></p>
+        <div set:html={md.render(body)}></div>
     </section>
 
     <section class="projects-list">
@@ -29,7 +33,7 @@ function slugify(str) {
         <article class="project-card">
           <a href={`/projects/${slugify(project.title)}`}>
             <figure class="project-image">
-                <Image
+                <CmsImage
                   src={project.heroImage}
                   alt={project.title}
                   width={600}
@@ -98,7 +102,7 @@ function slugify(str) {
 }
 
 /* make images respectful of container and not expand it */
-.project-image img {
+:global(.project-image img) {
   display: block;
   width: 100%;
   height: 100%;

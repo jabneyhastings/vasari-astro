@@ -103,7 +103,7 @@ a:hover {
     margin-bottom: 1.5rem;
 }
 
-.page-intro {
+.page-intro:has(.page-intro-content) {
     padding-bottom: 80px;
 }
 

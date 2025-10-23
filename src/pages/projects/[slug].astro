@@ -2,6 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import CmsImage from '../../components/CmsImage.astro';
+
+import MarkdownIt from 'markdown-it';
+const md = new MarkdownIt();
+
 import projectData from '../../content/projects/projects.json';
 export async function getStaticPaths() {
 function slugify(str) {
@@ -24,9 +28,7 @@ const { project } = Astro.props;
         <section class="project-detail">
             <div class="page-intro">
                 <h1>{project.title}</h1>
-                <div class="project-content">
-                    <p>{project.content}</p>
-                </div>
+                {project.content && <div set:html={md.render(project.content)} class="project-content page-intro-content"></div>}
             </div>
             <div class="project-gallery" id="projectGallery" aria-live="polite">
                 {project.images && project.images.map((image, i) => (

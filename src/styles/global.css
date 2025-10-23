@@ -89,6 +89,23 @@ a:hover {
     font-weight: 800;
 }
 
+.no-hero {
+    padding-top: 80px;
+}
+
+.no-hero .page-intro {
+    max-width: 1000px;
+    padding: 0 2rem;
+    margin: 0 auto 0 auto;
+    text-align: center;
+}
+
+.narrow-text {
+    max-width: 800px;
+    padding: 0 2rem;
+    margin: 0 auto;
+}
+
 .page-content {
     padding: 80px 40px;
     max-width: var(--s-page-width);

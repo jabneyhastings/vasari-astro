@@ -17,13 +17,11 @@ const socialLinks = [
             <Image src={emblem} alt="Vasari Logo" width={105} height={85} class="footer-title" />
         </div>
         <div class="footer-section footer-contact">
-            <b>Contact Us:</b><br>
-            <a href="mailto:enquiries@vasaridesign.com">enquiries@vasaridesign.com</a>
+            <SocialLinks links={socialLinks} />
+            <a href={createUrl('projects')} class="text-link">Projects</a>
         </div>
 
         <div class="footer-section footer-follow">
-            <SocialLinks links={socialLinks} />
-            <a href={createUrl('projects')} class="text-link">Projects</a>
             <a href={createUrl('contact')} class="text-link">Contact</a>
             <a href={createUrl('careers')} class="text-link">Careers</a>
         </div>
@@ -47,19 +45,19 @@ const socialLinks = [
     }
 
     .footer-content {
-        padding: 40px 40px 80px 40px;
-        max-width: var(--s-page-width);
+        padding: 40px 0 80px 0;
+        max-width: 1000px;
         margin: 0 auto;
         display: grid;
         gap: 3rem;
-        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-columns: 3fr 1fr 1fr;
         grid-template-areas: ". contact follow";
         align-items: start;
     }
 
     .footer-contact { grid-area: contact; }
     .footer-follow  { grid-area: follow; }
-    :global(.footer-follow a) {
+    :global(.footer a) {
         display: block;
         margin-bottom: 0.5rem;
     }

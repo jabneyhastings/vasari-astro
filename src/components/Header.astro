@@ -94,6 +94,7 @@ import logoDark from "../images/logo-dark.png";
         align-items: flex-end; /* text aligns with bottom of logo */
         gap: 1.5rem; /* small gap between each element */
         pointer-events: auto;
+        margin-left: -16px;
     }
 
     /* Links */
@@ -121,13 +122,22 @@ import logoDark from "../images/logo-dark.png";
     }
 
     /* Scrolled state */
-    .header.scrolled {
+    .header.scrolled,
+    :global(.no-hero .header) {
         background-color: var(--c-background);
         color: var(--c-font);
     }
 
-    .header.scrolled .text-link {
+    .header.scrolled .text-link,
+    :global(.no-hero .header) .text-link {
         color: var(--c-font);
+    }
+
+    :global(.no-hero .header #site-logo-dark) {
+        display: block !important;
+    }
+    :global(.no-hero .header #site-logo-light) {
+        display: none !important;
     }
 
     /* Responsive */
@@ -140,23 +150,5 @@ import logoDark from "../images/logo-dark.png";
             gap: 1rem;
             font-size: 0.9rem;
         }
-    }
-    ::view-transition-old(site-header) {
-        animation: header-slide-up 0.6s ease forwards;
-    }
-
-    ::view-transition-new(site-header) {
-        animation: header-slide-down 0.6s ease forwards;
-        animation-delay: 0.2s;
-    }
-
-    @keyframes header-slide-up {
-        from { transform: translateY(0); opacity: 1; }
-        to   { transform: translateY(-100%); opacity: 0; }
-    }
-
-    @keyframes header-slide-down {
-        from { transform: translateY(-100%); opacity: 0; }
-        to   { transform: translateY(0); opacity: 1; }
     }
 </style>

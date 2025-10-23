@@ -1,11 +1,11 @@
 ---
 title: "About Vasari"
 description: "Learn more about Vasari Design and our philosophy."
-heroImage: "/uploads/hero1.jpg"
 ---
-
+<div class="narrow-text">
 Vasari specialises in architecture, construction, interior design and project delivery. Founded on the belief that exceptional homes are built through clarity of vision and obsessive attention to detail, Vasari brings together every element of the process – from the first sketch to the final styling – under one cohesive philosophy.
 
 We work with a trusted circle of artisans, contractors and consultants, relationships built over years of collaboration. This continuity ensures complete control over quality, detail and delivery, at every stage.
 
 Our projects are defined by proportion, texture and emotional resonance. We favour timelessness over trend, substance over spectacle and always design with the lived experience in mind. Whether restoring heritage, creating private homes or developing new projects, every Vasari creation is a statement of considered design and complete delivery – crafted to endure, designed to be lived in with ease, and beautifully considered.
+</div>

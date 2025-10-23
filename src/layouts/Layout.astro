@@ -2,6 +2,7 @@
 export interface Props {
   title: string;
   description?: string;
+  hero?: string;
 }
 
 import { ClientRouter } from "astro:transitions";
@@ -13,7 +14,7 @@ import Footer from "../components/Footer.astro";
 import '../styles/fonts.css';
 import '../styles/global.css';
 
-const { title, description } = Astro.props;
+const { title, description, hero } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -43,7 +44,7 @@ const { title, description } = Astro.props;
 
     <ClientRouter />
   </head>
-  <body id="home">
+  <body id="home" class={hero} transition:name="fade" transition:in:duration="300" transition:out:duration="300" transition:fade>
 
     <Header />
 

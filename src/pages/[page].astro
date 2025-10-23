@@ -28,7 +28,7 @@ if (!entry) {
 const { Content } = await render(entry);
 const { title, description, heroImage, sideImage } = entry.data;
 ---
-<Layout title={title} description={description}>
+<Layout title={title} description={description} hero={heroImage ? undefined : 'no-hero'}>
   {heroImage && <HeroImage src={heroImage} alt={title} />}
   <section class="page-content">
     {sideImage ?
@@ -42,8 +42,10 @@ const { title, description, heroImage, sideImage } = entry.data;
         </div>
       </div>
     :
-      <h1>{title}</h1>
-      <Content />
+      <div class="page-intro">
+        <h1>{title}</h1>
+        <Content />
+      </div>
     }
   </section>
 </Layout>

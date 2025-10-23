@@ -64,6 +64,9 @@ content:
       - name: heroImage
         label: Hero Image
         type: image
+      - name: sideImage
+        label: Side Image
+        type: image
       - name: body
         label: Content
         type: rich-text
@@ -83,6 +86,9 @@ content:
         type: string
       - name: heroImage
         label: Hero Image
+        type: image
+      - name: sideImage
+        label: Side Image
         type: image
       - name: body
         label: Content

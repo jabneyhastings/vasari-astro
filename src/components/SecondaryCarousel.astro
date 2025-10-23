@@ -40,7 +40,8 @@ const { projects } = Astro.props;
 <style>
     .projects-carousel {
         padding: 0 2rem;
-        max-width: var(--s-page-width);
+        width: 90vw;
+        max-width: 1000px;
         margin: 0 auto;
     }
 
@@ -52,7 +53,7 @@ const { projects } = Astro.props;
 
     .projects-carousel__track {
         display: flex;
-        gap: 8rem;
+        gap: 4rem;
         transition: transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: grab;
         user-select: none;
@@ -70,7 +71,7 @@ const { projects } = Astro.props;
     }
 
     .projects-carousel__slide {
-        flex: 0 0 calc((100% - 4rem) / 2);
+        flex: 0 0 calc(50% - 2rem);
         display: block;
         overflow: hidden;
         text-decoration: none;

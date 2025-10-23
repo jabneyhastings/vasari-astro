@@ -2,7 +2,7 @@
 import SocialLinks from "../components/SocialLinks.astro";
 import { Image } from 'astro:assets';
 import { createUrl } from '../utils/url.ts';
-import emblem from '../images/emblem.png';
+import emblem from '../images/logo-dark.png';
 
 const socialLinks = [
   { name: "Instagram", url: "https://instagram.com/vasaridesign_" },
@@ -14,25 +14,11 @@ const socialLinks = [
 <footer class="footer">
     <div class="footer-content">
         <div class="footer-section">
-            <Image src={emblem} alt="Vasari Logo" width={55} height={56} class="footer-title" />
+            <Image src={emblem} alt="Vasari Logo" width={105} height={85} class="footer-title" />
         </div>
         <div class="footer-section footer-contact">
-            <table>
-                <tr>
-                    <td class="bold">London:</td>
-                    <td>
-                        <a href="tel:+447903139144">+44 7903 139 144</a>
-                        <a href="mailto:leigh@vasaridesign.co.uk">leigh@vasaridesign.co.uk</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="bold">Dallas:</td>
-                    <td>
-                        <a href="tel:+18172715844">+1 817 271 5844</a>
-                        <a href="mailto:roman@vasaridesign.com">roman@vasaridesign.com</a>
-                    </td>
-                </tr>
-            </table>
+            <b>Contact Us:</b><br>
+            <a href="mailto:enquiries@vasaridesign.com">enquiries@vasaridesign.com</a>
         </div>
 
         <div class="footer-section footer-follow">

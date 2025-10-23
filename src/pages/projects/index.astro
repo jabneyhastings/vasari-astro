@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import CmsImage from '../../components/CmsImage.astro';
+import { createUrl } from '../../utils/url.ts';
 
 import MarkdownIt from 'markdown-it';
 const md = new MarkdownIt();
@@ -31,7 +32,7 @@ function slugify(str) {
     <section class="projects-list">
       {projects.map((project) => (
         <article class="project-card">
-          <a href={`/projects/${slugify(project.title)}`}>
+          <a href={createUrl(`/projects/${slugify(project.title)}`)}>
             <figure class="project-image">
                 <CmsImage
                   src={project.heroImage}

@@ -35,22 +35,6 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
       </div>
     ))}
   </div>
-  
-  {slides.length > 1 && (
-    <div class="carousel__controls">
-      <div class="carousel__dots" role="tablist" aria-label="Carousel navigation">
-        {slides.map((slide, index) => (
-          <button 
-            class={`carousel__dot ${index === 0 ? 'carousel__dot--active' : ''}`}
-            role="tab"
-            aria-selected={index === 0}
-            aria-label={`Go to slide ${index + 1}: ${slide.alt}`}
-            data-slide={index}
-          />
-        ))}
-      </div>
-    </div>
-  )}
 </section>
 
 <script define:vars={{ autoAdvanceDelay }}>
@@ -62,13 +46,10 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
         constructor(root) {
             this.root = root;
             this.slides = Array.from(root.querySelectorAll('.carousel__slide'));
-            this.dots = Array.from(root.querySelectorAll('.carousel__dot'));
             this.currentSlide = 0;
             this.autoAdvanceTimer = null;
 
             // bound handlers so we can remove them later
-            this.onRootClick = this.onRootClick.bind(this);
-            this.onRootKeydown = this.onRootKeydown.bind(this);
             this.onTouchStart = this.onTouchStart.bind(this);
             this.onTouchEnd = this.onTouchEnd.bind(this);
             this.onFocusIn = this.onFocusIn.bind(this);
@@ -86,8 +67,6 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
             instances.set(this.root, this);
 
             // Event delegation: single handlers attached to the root
-            this.root.addEventListener('click', this.onRootClick);
-            this.root.addEventListener('keydown', this.onRootKeydown);
             this.root.addEventListener('touchstart', this.onTouchStart, { passive: true });
             this.root.addEventListener('touchend', this.onTouchEnd, { passive: true });
             this.root.addEventListener('focusin', this.onFocusIn);
@@ -97,37 +76,8 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
             this.slides.forEach((s, i) => {
                 s.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
             });
-            this.dots.forEach((d, i) => {
-                d.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-            });
 
             this.startAutoAdvance();
-        }
-
-        onRootClick(e) {
-            // dot click
-            const dot = e.target.closest('.carousel__dot');
-            if (dot && this.root.contains(dot)) {
-                const index = Number(dot.getAttribute('data-slide'));
-                if (!Number.isNaN(index)) this.goToSlide(index);
-                return;
-            }
-
-            // let normal link clicks inside slides behave naturally;
-            // if links inside slides are not working, the problem is likely z-index/pointer-events.
-        }
-
-        onRootKeydown(e) {
-            const dot = e.target.closest('.carousel__dot');
-            if (!dot) return;
-            const index = Number(dot.getAttribute('data-slide'));
-            if (e.key === 'ArrowLeft' && index > 0) {
-                this.goToSlide(index - 1);
-                this.dots[index - 1].focus();
-            } else if (e.key === 'ArrowRight' && index < this.dots.length - 1) {
-                this.goToSlide(index + 1);
-                this.dots[index + 1].focus();
-            }
         }
 
         onTouchStart(e) {
@@ -158,22 +108,14 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
             if (index === this.currentSlide) return;
 
             const prevSlide = this.slides[this.currentSlide];
-            const prevDot = this.dots[this.currentSlide];
-
             prevSlide?.classList.remove('carousel__slide--active');
             prevSlide?.setAttribute('aria-hidden', 'true');
-            prevDot?.classList.remove('carousel__dot--active');
-            prevDot?.setAttribute('aria-selected', 'false');
 
             this.currentSlide = index;
 
             const curSlide = this.slides[this.currentSlide];
-            const curDot = this.dots[this.currentSlide];
-
             curSlide?.classList.add('carousel__slide--active');
             curSlide?.setAttribute('aria-hidden', 'false');
-            curDot?.classList.add('carousel__dot--active');
-            curDot?.setAttribute('aria-selected', 'true');
 
             this.resetAutoAdvance();
         }
@@ -215,8 +157,6 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
 
         destroy() {
             this.clearTimers();
-            this.root.removeEventListener('click', this.onRootClick);
-            this.root.removeEventListener('keydown', this.onRootKeydown);
             this.root.removeEventListener('touchstart', this.onTouchStart, { passive: true });
             this.root.removeEventListener('touchend', this.onTouchEnd, { passive: true });
             this.root.removeEventListener('focusin', this.onFocusIn);
@@ -304,55 +244,6 @@ const { slides, autoAdvanceDelay = 5000 } = Astro.props;
     object-fit: cover;
     object-position: center;
     display: block;
-  }
-
-  .carousel__controls {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-  }
-
-  .carousel__dots {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-  }
-
-  .carousel__dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    position: relative;
-  }
-
-  .carousel__dot--active {
-    background: white;
-  }
-
-  .carousel__dot::after {
-    content: "";
-    position: absolute;
-    inset: -12px;
-    border: 1px solid white;
-    border-radius: 50%;
-    transform: scale(0.8);
-    opacity: 0;
-    transition: transform 0.5s ease, opacity 0.5s ease;
-  }
-
-  .carousel__dot--active::after {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  .carousel__dot:hover {
-    background: rgba(255, 255, 255, 0.8);
   }
 
   /* Reduced motion support */

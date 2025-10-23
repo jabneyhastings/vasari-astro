@@ -168,9 +168,6 @@ content:
       - name: heroImage
         label: Hero Image
         type: image
-      - name: sliderImage
-        label: Slider Image
-        type: image
       - name: body
         label: Body Content
         type: markdown
@@ -187,6 +184,9 @@ content:
             type: string
           - name: heroImage
             label: Project Hero Image
+            type: image
+          - name: sliderImage
+            label: Slider Image
             type: image
           - name: content
             label: Project Description

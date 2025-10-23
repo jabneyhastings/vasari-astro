@@ -8,7 +8,8 @@
     --s-padding: 80px;
 
     /* Fonts */
-    --ff: 'amblelight';
+    --ff: 'amblelight', sans-serif;
+    --ff-heading: 'latin_modern_roman10_regular', serif;
     --fs: 14px;
     --fs-large: 20px;
     --fs-small: 14px;
@@ -50,7 +51,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Libre Caslon Display", serif;
+    font-family: var(--ff-heading);
     font-weight: 400;
     line-height: 1.2;
     text-transform: uppercase;
@@ -59,7 +60,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    font-size: 24px;
+    font-size: 21px;
 }
 
 h2 {
@@ -153,48 +154,4 @@ table td {
     body {
         font-size: 16px;
     }
-}
-
-/* OLD content slides down and fades out */
-::view-transition-old(page-content) {
-  animation: page-slide-down 0.8s ease forwards;
-  z-index: 1;
-  /* animation-delay: 0.2s;  */
-  animation-fill-mode: forwards; /* <- keep it around until finished */
-}
-
-/* NEW content starts hidden below, waits, then rises up */
-::view-transition-new(page-content) {
-  animation: page-slide-up 0.8s ease backwards;
-  /* z-index: 0;  */
-  /* animation-delay: 0.2s;  */
-  animation-fill-mode: backwards; /* <- don’t show early */
-}
-
-@keyframes page-slide-down {
-  from { transform: translateY(0); opacity: 1; }
-  to   { transform: translateY(100%); opacity: 0; }
-}
-
-@keyframes page-slide-up {
-  from { transform: translateY(100%); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-
-::view-transition-old(hero) {
-  animation: slideUp 0.7s forwards;
-}
-
-::view-transition-new(hero) {
-  animation: dropIn 0.7s forwards;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(0); opacity: 1; }
-  to   { transform: translateY(-100%); opacity: 0; }
-}
-
-@keyframes dropIn {
-  from { transform: translateY(-100%); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
 }

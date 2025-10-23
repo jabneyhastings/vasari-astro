@@ -30,7 +30,7 @@ const { title, description, heroImage, sideImage } = entry.data;
 ---
 <Layout title={title} description={description}>
   {heroImage && <HeroImage src={heroImage} alt={title} />}
-  <section class="page-content" transition:name="page-content">
+  <section class="page-content">
     {sideImage ?
       <div class="grid">
         <div class="grid-left">

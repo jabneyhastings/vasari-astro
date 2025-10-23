@@ -5,6 +5,7 @@ import { createUrl } from '../utils/url.ts';
 
 interface Project {
     title: string;
+    sliderImage: string;
     heroImage: string;
 }
 
@@ -25,7 +26,7 @@ const { projects } = Astro.props;
                 >
                     <div class="projects-carousel__media">
                         <CmsImage
-                            src={project.heroImage}
+                            src={project.sliderImage || project.heroImage}
                             alt={project.title}
                             height={500}
                             loading="lazy"

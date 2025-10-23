@@ -14,7 +14,7 @@ interface Props {
 const { slides, autoAdvanceDelay = 5000 } = Astro.props;
 ---
 
-<section class="carousel header__spacer" aria-label="Hero carousel" transition:name="hero">
+<section class="carousel header__spacer" aria-label="Hero carousel">
   <div class="carousel__slides">
     {slides.map((slide, index) => (
       <div 

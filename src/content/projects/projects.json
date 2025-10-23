@@ -6,7 +6,8 @@
   "projects": [
     {
       "title": "Winward Way",
-      "heroImage": "/uploads/4722BFEE-667A-4740-AC20-0CC18ECAF98D_1_105_c.jpeg",
+      "heroImage": "/uploads/winwardhero.jpg",
+      "sliderImage": "/uploads/4722BFEE-667A-4740-AC20-0CC18ECAF98D_1_105_c.jpeg",
       "images": [
         {
           "src": "/uploads/4722BFEE-667A-4740-AC20-0CC18ECAF98D_1_105_c.jpeg",
@@ -28,8 +29,13 @@
     },
     {
       "title": "IZZA",
-      "heroImage": "/uploads/izza1.jpg",
+      "heroImage": "/uploads/izzahero.jpg",
+      "sliderImage": "/uploads/izza0.jpg",
       "images": [
+        {
+          "src": "/uploads/izza0.jpg",
+          "alt": ""
+        },
         {
           "src": "/uploads/izza1.jpg",
           "alt": ""
@@ -50,8 +56,13 @@
     },
     {
       "title": "Westminster Apartments",
-      "heroImage": "/uploads/westminster1.jpg",
+      "heroImage": "/uploads/westminsterhero.jpg",
+      "sliderImage": "/uploads/westminster0.jpg",
       "images": [
+        {
+          "src": "/uploads/westminster0.jpg",
+          "alt": ""
+        },
         {
           "src": "/uploads/westminster1.jpg",
           "alt": ""
@@ -72,8 +83,13 @@
     },
     {
       "title": "Chelsea Park Gardens",
-      "heroImage": "/uploads/chelsea1.jpg",
+      "heroImage": "/uploads/chelseahero.jpg",
+      "sliderImage": "/uploads/chelsea0.jpg",
       "images": [
+        {
+          "src": "/uploads/chelsea0.jpg",
+          "alt": ""
+        },
         {
           "src": "/uploads/chelsea1.jpg",
           "alt": ""
@@ -110,6 +126,33 @@
         },
         {
           "src": "/uploads/storm4.jpg",
+          "alt": ""
+        }
+      ]
+    },
+    {
+      "title": "Fullham House",
+      "heroImage": "/uploads/fullhamhero.jpg",
+      "sliderImage": "/uploads/fullham0.jpg",
+      "images": [
+        {
+          "src": "/uploads/fullham0.jpg",
+          "alt": ""
+        },
+        {
+          "src": "/uploads/fullham1.jpg",
+          "alt": ""
+        },
+        {
+          "src": "/uploads/fullham2.jpg",
+          "alt": ""
+        },
+        {
+          "src": "/uploads/fullham3.jpg",
+          "alt": ""
+        },
+        {
+          "src": "/uploads/fullham4.jpg",
           "alt": ""
         }
       ]

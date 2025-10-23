@@ -61,6 +61,7 @@ const projects = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     heroImage: z.string().optional(),
+    sliderImage: z.string().optional(),
     body: z.string().optional(),
     projects: z.array(
       z.object({

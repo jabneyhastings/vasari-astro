@@ -24,7 +24,7 @@ const { project } = Astro.props;
 ---
 <Layout title={project.title}>
     {project.heroImage && <HeroImage src={project.heroImage} alt={project.title} />}
-    <section class="page-content" transition:name="page-content">
+    <section class="page-content">
         <section class="project-detail">
             <div class="page-intro align-centre">
                 <h1>{project.title}</h1>

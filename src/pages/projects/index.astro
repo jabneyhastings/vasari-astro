@@ -10,7 +10,7 @@ const md = new MarkdownIt();
 import projectData from '../../content/projects/projects.json';
 import { Image } from 'astro:assets';
 
-const { title, description, heroImage, body, projects } = projectData;
+const { title, description, heroImage, sliderImage, body, projects } = projectData;
 
 function slugify(str) {
   return str
@@ -23,7 +23,7 @@ function slugify(str) {
 <Layout title={title} description={description}>
   {heroImage && <HeroImage src={heroImage} alt={title} />}
 
-  <section class="page-content" transition:name="page-content">
+  <section class="page-content">
     <section class="projects-intro align-centre">
         <h1>{title}</h1>
         <div set:html={md.render(body)}></div>
@@ -35,7 +35,7 @@ function slugify(str) {
           <a href={createUrl(`/projects/${slugify(project.title)}`)}>
             <figure class="project-image">
                 <CmsImage
-                  src={project.heroImage}
+                  src={project.sliderImage || project.heroImage}
                   alt={project.title}
                   width={600}
                   height={800}

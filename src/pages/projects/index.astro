@@ -24,7 +24,7 @@ function slugify(str) {
   {heroImage && <HeroImage src={heroImage} alt={title} />}
 
   <section class="page-content" transition:name="page-content">
-    <section class="projects-intro">
+    <section class="projects-intro align-centre">
         <h1>{title}</h1>
         <div set:html={md.render(body)}></div>
     </section>
@@ -55,7 +55,7 @@ function slugify(str) {
 <style>
 :root {
   --project-aspect-ratio: 3 / 4;
-  --grid-gap: 8rem;
+  --grid-gap: 4rem;
 }
 
 .projects-intro {
@@ -66,6 +66,9 @@ function slugify(str) {
   display: grid;
   gap: var(--grid-gap);
   grid-template-columns: 1fr;
+  width: 90vw;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 /* two columns on medium+ screens */

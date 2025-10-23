@@ -26,7 +26,7 @@ const { project } = Astro.props;
     {project.heroImage && <HeroImage src={project.heroImage} alt={project.title} />}
     <section class="page-content" transition:name="page-content">
         <section class="project-detail">
-            <div class="page-intro">
+            <div class="page-intro align-centre">
                 <h1>{project.title}</h1>
                 {project.content && <div set:html={md.render(project.content)} class="project-content page-intro-content"></div>}
             </div>
@@ -58,13 +58,15 @@ const { project } = Astro.props;
 <style>
     :root {
         --project-aspect-ratio: 3 / 4;
-        --grid-gap: 8rem;
+        --grid-gap: 4rem;
     }
     .project-gallery {
+        width: 90vw;
+        max-width: 1000px;
         display: grid;
         gap: var(--grid-gap);
         grid-template-columns: 1fr;
-        margin-bottom: 80px;
+        margin: 0 auto 80px auto;
     }
     @media (min-width: 768px) {
         .project-gallery {

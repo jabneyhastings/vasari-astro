@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import HeroImage from '../components/HeroImage.astro';
+import CmsImage from '../components/CmsImage.astro';
 import { getCollection, getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -25,13 +26,25 @@ if (!entry) {
 }
 
 const { Content } = await render(entry);
-const { title, description, heroImage } = entry.data;
+const { title, description, heroImage, sideImage } = entry.data;
 ---
 <Layout title={title} description={description}>
   {heroImage && <HeroImage src={heroImage} alt={title} />}
   <section class="page-content" transition:name="page-content">
-    <h1>{title}</h1>
-    <Content />
+    {sideImage ?
+      <div class="grid">
+        <div class="grid-left">
+          <h1>{title}</h1>
+          <Content />
+        </div>
+        <div class="grid-right">
+          <CmsImage src={sideImage} alt={title} />
+        </div>
+      </div>
+    :
+      <h1>{title}</h1>
+      <Content />
+    }
   </section>
 </Layout>
 

@@ -70,6 +70,49 @@ content:
         options:
           media: false
 
+  - name: "contact"
+    label: "Contact Page"
+    type: file
+    path: "src/content/pages/contact.md"
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: string
+      - name: heroImage
+        label: Hero Image
+        type: image
+      - name: body
+        label: Content
+        type: rich-text
+        options:
+          media: false
+
+  - name: "careers"
+    label: "Careers Page"
+    type: file
+    path: "src/content/careers/careers.json"
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: string
+      - name: heroImage
+        label: Hero Image
+        type: image
+      - name: sideImage
+        label: Side Image
+        type: image
+      - name: body
+        label: Content
+        type: rich-text
+        options:
+          media: false
+
   - name: "services"
     label: "Services Page"
     type: file

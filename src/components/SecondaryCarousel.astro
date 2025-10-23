@@ -1,6 +1,7 @@
 ---
 import CmsImage from '../components/CmsImage.astro';
 import { slugify } from '../utils/slugify.js';
+import { createUrl } from '../utils/url.ts';
 
 interface Project {
     title: string;
@@ -18,8 +19,8 @@ const { projects } = Astro.props;
     <div class="projects-carousel__viewport">
         <div class="projects-carousel__track" id="projectsTrack">
             {projects.map((project) => (
-                <a 
-                    href={`/projects/${slugify(project.title)}`}
+                <a
+                    href={createUrl(`/projects/${slugify(project.title)}`)}
                     class="projects-carousel__slide"
                 >
                     <div class="projects-carousel__media">
@@ -54,6 +55,9 @@ const { projects } = Astro.props;
         gap: 8rem;
         transition: transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: grab;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
     }
 
     .projects-carousel__track:active {
@@ -125,9 +129,9 @@ const { projects } = Astro.props;
             this.root = root;
             this.track = this.root.querySelector('#projectsTrack');
             this.slides = Array.from(this.root.querySelectorAll('.projects-carousel__slide'));
-            this.currentIndex = this.slides.length; // start at the middle set
+            this.currentIndex = this.slides.length;
             this.autoplayInterval = null;
-            this.touchState = { startX: 0, currentX: 0, isDragging: false };
+            this.touchState = { startX: 0, currentX: 0, isDragging: false, hasMoved: false };
             this.hasDragged = false;
             this.isHovered = false;
             this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -190,17 +194,9 @@ const { projects } = Astro.props;
             const gapSize = this.getGapSize();
             const offset = this.currentIndex * (slideWidth + gapSize);
 
-            if (!smooth) this.track.style.transition = 'none';
+            if (!smooth || this.prefersReducedMotion) this.track.style.transition = 'none';
             this.track.style.transform = `translateX(-${offset}px)`;
             if (!smooth) requestAnimationFrame(() => (this.track.style.transition = ''));
-        }
-
-        snapToNearest() {
-            const slideWidth = this.allSlides[0].clientWidth + this.getGapSize();
-            const rawOffset = parseFloat(this.track.style.transform.replace(/[^0-9.\-]/g, '')) || 0;
-            const approxIndex = Math.round(rawOffset / slideWidth);
-            this.currentIndex = Math.min(Math.max(approxIndex, 0), this.allSlides.length - 1);
-            this.updatePosition(true);
         }
 
         goNext() {
@@ -219,7 +215,6 @@ const { projects } = Astro.props;
             const total = this.allSlides.length;
             const base = this.slides.length;
 
-            // Loop back if beyond end or start
             setTimeout(() => {
                 if (this.currentIndex >= total - base) {
                     this.track.style.transition = 'none';
@@ -230,7 +225,7 @@ const { projects } = Astro.props;
                     this.currentIndex += base;
                     this.updatePosition(false);
                 }
-            }, 400); // shorter than animation duration so it happens invisibly
+            }, 400);
         }
 
         handleDragStart(e) {
@@ -239,15 +234,24 @@ const { projects } = Astro.props;
             this.touchState.startX = e.clientX;
             this.touchState.currentX = e.clientX;
             this.touchState.isDragging = true;
+            this.touchState.hasMoved = false;
             this.hasDragged = false;
             this.track.classList.add('is-dragging');
             this.pauseAutoplay();
+            document.body.style.userSelect = 'none';
         }
 
         handleDragMove(e) {
             if (!this.touchState.isDragging) return;
-            this.hasDragged = true;
+            e.preventDefault();
+            
             const diff = e.clientX - this.touchState.startX;
+            
+            if (Math.abs(diff) > 5) {
+                this.touchState.hasMoved = true;
+                this.hasDragged = true;
+            }
+            
             const slideWidth = this.allSlides[0].clientWidth;
             const gapSize = this.getGapSize();
             const baseOffset = this.currentIndex * (slideWidth + gapSize);
@@ -258,13 +262,26 @@ const { projects } = Astro.props;
         handleDragEnd(e) {
             if (!this.touchState.isDragging) return;
             this.track.classList.remove('is-dragging');
+            document.body.style.userSelect = '';
+            
             const diff = e.clientX - this.touchState.startX;
-            const threshold = 50;
+            const threshold = 80;
 
-            if (Math.abs(diff) > threshold) diff > 0 ? this.goPrev() : this.goNext();
-            else this.snapToNearest();
+            this.track.style.transition = '';
+
+            if (Math.abs(diff) > threshold) {
+                diff > 0 ? this.goPrev() : this.goNext();
+            } else if (this.touchState.hasMoved) {
+                this.updatePosition(true);
+            }
 
             this.touchState.isDragging = false;
+            this.touchState.hasMoved = false;
+            
+            setTimeout(() => {
+                this.hasDragged = false;
+            }, 10);
+            
             if (!this.isHovered) this.resumeAutoplay();
         }
 
@@ -273,6 +290,7 @@ const { projects } = Astro.props;
             this.touchState.startX = touch.clientX;
             this.touchState.currentX = touch.clientX;
             this.touchState.isDragging = true;
+            this.touchState.hasMoved = false;
             this.hasDragged = false;
             this.track.classList.add('is-dragging');
             this.pauseAutoplay();
@@ -282,6 +300,14 @@ const { projects } = Astro.props;
             if (!this.touchState.isDragging) return;
             const touch = e.touches[0];
             const diff = touch.clientX - this.touchState.startX;
+            
+            if (Math.abs(diff) > 5) {
+                this.touchState.hasMoved = true;
+                this.hasDragged = true;
+                e.preventDefault();
+            }
+            
+            this.touchState.currentX = touch.clientX;
             const slideWidth = this.allSlides[0].clientWidth;
             const gapSize = this.getGapSize();
             const baseOffset = this.currentIndex * (slideWidth + gapSize);
@@ -292,13 +318,25 @@ const { projects } = Astro.props;
         handleTouchEnd() {
             if (!this.touchState.isDragging) return;
             this.track.classList.remove('is-dragging');
+            
             const diff = this.touchState.currentX - this.touchState.startX;
-            const threshold = 50;
+            const threshold = 80;
 
-            if (Math.abs(diff) > threshold) diff > 0 ? this.goPrev() : this.goNext();
-            else this.snapToNearest();
+            this.track.style.transition = '';
+
+            if (Math.abs(diff) > threshold) {
+                diff > 0 ? this.goPrev() : this.goNext();
+            } else if (this.touchState.hasMoved) {
+                this.updatePosition(true);
+            }
 
             this.touchState.isDragging = false;
+            this.touchState.hasMoved = false;
+            
+            setTimeout(() => {
+                this.hasDragged = false;
+            }, 10);
+            
             this.resumeAutoplay();
         }
 

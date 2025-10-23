@@ -111,6 +111,35 @@ a:hover {
     transform-origin: top;
 }
 
+table td {
+    padding: 0 0.5rem 0.5rem 0;
+    vertical-align: top;
+}
+
+.grid {
+    display: grid;
+    grid-template-areas:
+        "left right";
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    margin: 0 auto;
+}
+
+.grid-left {
+    grid-area: left;
+}
+
+.grid-right {
+    grid-area: right;
+    margin-top: 0;
+}
+
+.grid-right img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
 @media (max-width: 768px) {
     .page-content {
         padding: 40px 20px;

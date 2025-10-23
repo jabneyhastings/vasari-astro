@@ -86,8 +86,8 @@ const { project } = Astro.props;
         cursor: zoom-in;
         transition: transform 0.4s ease;
     }
-    .project-item img:focus,
-    .project-item img:hover {
+    :global(.project-item img:focus),
+    :global(.project-item img:hover) {
         transform: scale(1.03);
     }
 

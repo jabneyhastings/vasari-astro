@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroImage from '../components/HeroImage.astro';
+import CmsImage from '../components/CmsImage.astro';
+import { getEntry } from 'astro:content';
+import MarkdownIt from 'markdown-it';
+import ContactForm from '../components/ContactForm.astro';
+const md = new MarkdownIt();
+
+const entry = await getEntry('careers', 'careers');
+if (!entry) {
+    throw new Error("Entry for 'careers' not found.");
+}
+
+const { title, description, heroImage, sideImage, body } = entry.data;
+---
+<Layout title={title} description={description}>
+    {heroImage && (
+        <HeroImage src={heroImage} alt={title} />
+    )}
+    <main class="page-content grid" transition:name="page-content">
+        <section class="grid-left">
+            <section class="page-intro">
+                <h1>{title}</h1>
+                <div class="text-content" set:html={md.render(body ?? '')} />
+            </section>
+
+            <ContactForm />
+        </section>
+        <section class="grid-right">
+            {sideImage && (
+                <CmsImage src={sideImage} alt={title} />
+            )}
+        </section>
+    </main>
+</Layout>

@@ -1,0 +1,220 @@
+---
+---
+
+<style>
+  form {
+    width: 100%;
+    max-width: 500px;
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+
+  input,
+  textarea {
+    font: var(--ff);
+    border: none;
+    border-bottom: 2px solid #cec7bb;
+    padding: 6px 0;
+    font-size: 1rem;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: var(--c-font);
+  }
+
+  label {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    color: var(--c-font);
+    opacity: 0.4;
+    font-size: var(--fs);
+    pointer-events: none;
+    transition: 0.2s ease;
+  }
+
+  input:focus + label,
+  input:not(:placeholder-shown) + label,
+  textarea:focus + label,
+  textarea:not(:placeholder-shown) + label {
+    top: -16px;
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+
+  .error-message {
+    color: #e63946;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: none;
+  }
+
+  .show-error .error-message {
+    display: block;
+  }
+
+  button {
+    padding: 0.75rem 1.5rem;
+    font-size: var(--fs);
+    font-family: var(--ff);
+    border: none;
+    background-color: var(--c-font);
+    color: var(--c-background);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: inline-block;
+    width: 50%;
+    margin: 0 auto;
+  }
+
+  button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+
+  button:hover:not(:disabled) {
+    transform: scale(0.99);
+  }
+
+  .form-status {
+    text-align: center;
+    font-size: 0.95rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .form-status.show {
+    opacity: 1;
+  }
+
+  .form-status.success {
+    color: #2a9d8f;
+  }
+
+  .form-status.error {
+    color: #e63946;
+  }
+
+@supports (field-sizing: content) {
+    textarea {
+        field-sizing: content;
+        resize: none;
+    }
+}
+</style>
+
+<form id="contact-form" method="POST" action="https://formspree.io/f/yourFormId" novalidate>
+  <div class="field">
+    <input type="text" id="name" name="name" required placeholder=" " />
+    <label for="name">Name *</label>
+    <span class="error-message">Please enter your name.</span>
+  </div>
+
+  <div class="field">
+    <input type="email" id="email" name="email" required placeholder=" " />
+    <label for="email">Email *</label>
+    <span class="error-message">Please enter a valid email address.</span>
+  </div>
+
+  <div class="field">
+    <input type="tel" id="phone" name="phone" placeholder=" " />
+    <label for="phone">Phone</label>
+  </div>
+
+  <div class="field">
+    <textarea id="message" name="message" required placeholder=" " rows="1"></textarea>
+    <label for="message">Message *</label>
+    <span class="error-message">Please enter a message.</span>
+  </div>
+
+  <button type="submit">Send Message</button>
+
+  <p id="form-status" class="form-status"></p>
+</form>
+
+<script>
+  const form = document.getElementById('contact-form');
+  const statusEl = document.getElementById('form-status');
+  const button = form.querySelector('button');
+  const fields = form.querySelectorAll('input, textarea');
+  let formSubmitted = false;
+
+  // ✅ Show validation messages only after interaction or submit
+  const showErrorIfInvalid = (field) => {
+    const wrapper = field.closest('.field');
+    if (!wrapper) return;
+    if (!field.validity.valid) {
+      wrapper.classList.add('show-error');
+    } else {
+      wrapper.classList.remove('show-error');
+    }
+  };
+
+  fields.forEach((field) => {
+    field.addEventListener('input', () => {
+      if (field.dataset.touched || formSubmitted) {
+        showErrorIfInvalid(field);
+      }
+      // ✅ Auto-grow textarea fallback
+      if (field.tagName === 'TEXTAREA' && !CSS.supports('block-size', 'auto')) {
+        field.style.height = 'auto';
+        field.style.height = field.scrollHeight + 'px';
+      }
+    });
+    field.addEventListener('blur', () => {
+      field.dataset.touched = true;
+      showErrorIfInvalid(field);
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formSubmitted = true;
+    fields.forEach(showErrorIfInvalid);
+
+    if (!form.checkValidity()) {
+      return; // don’t send if invalid
+    }
+
+    button.disabled = true;
+    statusEl.textContent = 'Sending...';
+    statusEl.className = 'form-status show';
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        form.reset();
+        statusEl.textContent = 'Message sent successfully!';
+        statusEl.className = 'form-status show success';
+      } else {
+        throw new Error('Server error');
+      }
+    } catch (error) {
+      statusEl.textContent = 'There was a problem sending your message.';
+      statusEl.className = 'form-status show error';
+    } finally {
+      button.disabled = false;
+      setTimeout(() => statusEl.classList.remove('show'), 5000);
+    }
+  });
+</script>

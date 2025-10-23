@@ -6,6 +6,7 @@ const pages = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     heroImage: z.string().optional(),
+    sideImage: z.string().optional(),
   }),
 });
 
@@ -43,6 +44,17 @@ const services = defineCollection({
   }),
 });
 
+const careers = defineCollection({
+  type: 'data',
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    heroImage: z.string().optional(),
+    sideImage: z.string().optional(),
+    body: z.string().optional(),
+  }),
+});
+
 const projects = defineCollection({
   type: 'data',
   schema: z.object({
@@ -73,4 +85,5 @@ export const collections = {
   home,
   services,
   projects,
+  careers,
 };

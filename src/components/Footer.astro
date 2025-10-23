@@ -1,6 +1,8 @@
 ---
 import SocialLinks from "../components/SocialLinks.astro";
+import { Image } from 'astro:assets';
 import { createUrl } from '../utils/url.ts';
+import emblem from '../images/emblem.png';
 
 const socialLinks = [
   { name: "Instagram", url: "https://instagram.com/vasaridesign_" },
@@ -11,6 +13,9 @@ const socialLinks = [
 
 <footer class="footer">
     <div class="footer-content">
+        <div class="footer-section">
+            <Image src={emblem} alt="Vasari Logo" width={55} height={56} class="footer-title" />
+        </div>
         <div class="footer-section footer-contact">
             <table>
                 <tr>
@@ -56,7 +61,7 @@ const socialLinks = [
     }
 
     .footer-content {
-        padding-bottom: 80px;
+        padding: 40px 40px 80px 40px;
         max-width: var(--s-page-width);
         margin: 0 auto;
         display: grid;
@@ -82,11 +87,6 @@ const socialLinks = [
     .footer__copyright {
         text-align: center;
         padding: 0 0 50px 0;
-    }
-
-    .footer table td {
-        padding: 0 0.5rem 0.5rem 0;
-        vertical-align: top;
     }
 
     @media (max-width: 1024px) {
